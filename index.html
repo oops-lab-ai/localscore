@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalScore – Location Risk Intelligence Without Police Data</title>
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #06090f;
+      --surface:   #0d1320;
+      --surface2:  #111827;
+      --border:    #1e2a3a;
+      --accent:    #00d4ff;
+      --accent2:   #0066ff;
+      --green:     #00ff88;
+      --orange:    #ff6b35;
+      --red:       #ff3355;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --radius:    10px;
+      --shadow:    0 8px 48px rgba(0,212,255,.08);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "SF Mono", "Fira Code", "Consolas", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(6,9,15,.95);
+      backdrop-filter: blur(16px);
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -.5px;
+    }
+    .logo span { color: var(--text); }
+    .nav-right { display: flex; gap: 1rem; align-items: center; }
+    .nav-badge {
+      font-size: .72rem;
+      background: rgba(0,212,255,.1);
+      color: var(--accent);
+      border: 1px solid rgba(0,212,255,.25);
+      padding: .25rem .75rem;
+      border-radius: 4px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    /* ── Grid Background ── */
+    .grid-bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding: 4rem 1.5rem 3rem; gap: 2.5rem; }
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(0,212,255,.08);
+      color: var(--accent);
+      border: 1px solid rgba(0,212,255,.2);
+      padding: .3rem .85rem;
+      border-radius: 4px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .pulse {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(1.5); }
+    }
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -.03em;
+      margin-bottom: 1.2rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    h1 .highlight {
+      color: var(--accent);
+    }
+    .subheadline {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.65;
+    }
+    .target-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      font-size: .72rem;
+      padding: .25rem .65rem;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: .03em;
+    }
+    .badge-blue  { background: rgba(0,102,255,.15); color: #6699ff; border: 1px solid rgba(0,102,255,.25); }
+    .badge-teal  { background: rgba(0,212,255,.1);  color: var(--accent); border: 1px solid rgba(0,212,255,.2); }
+    .badge-green { background: rgba(0,255,136,.08); color: var(--green);  border: 1px solid rgba(0,255,136,.2); }
+
+    /* ── Heatmap ── */
+    .heatmap-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .heatmap-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: .75rem;
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .heatmap-header span { color: var(--accent); }
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(18, 1fr);
+      grid-template-rows: repeat(12, 1fr);
+      gap: 2px;
+      height: 160px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .heatmap-cell {
+      border-radius: 2px;
+      transition: opacity .3s;
+    }
+    .score-bar {
+      margin-top: 1rem;
+      background: var(--bg);
+      border-radius: 4px;
+      padding: .75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .8rem;
+    }
+    .score-bar .label { color: var(--muted); }
+    .score-bar .score-val {
+      font-weight: 700;
+      color: var(--green);
+      font-size: 1.1rem;
+    }
+    .score-track {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: .5rem;
+      overflow: hidden;
+    }
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--accent));
+      border-radius: 2px;
+      width: 72%;
+    }
+    .data-rows { margin-top: .75rem; }
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .4rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .75rem;
+    }
+    .data-row:last-child { border-bottom: none; }
+    .data-row .key { color: var(--muted); }
+    .data-row .val { font-weight: 600; color: var(--text); }
+    .val.green { color: var(--green); }
+    .val.orange { color: var(--orange); }
+    .val.red { color: var(--red); }
+
+    /* ── Form ── */
+    .demo-form {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      max-width: 460px;
+      margin: 0 auto;
+      box-shadow: var(--shadow);
+    }
+    .demo-form h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: .4rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .demo-form .form-sub {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .field {
+      margin-bottom: 1rem;
+    }
+    .field label {
+      display: block;
+      font-size: .75rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: .4rem;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .75rem 1rem;
+      border-radius: 6px;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field select:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--muted); }
+    .field select option { background: var(--surface2); }
+    .btn-demo {
+      width: 100%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      color: #fff;
+      border: none;
+      padding: .9rem;
+      border-radius: 6px;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: opacity .2s, transform .15s;
+      margin-top: .5rem;
+    }
+    .btn-demo:hover { opacity: .9; transform: translateY(-1px); }
+    .form-privacy {
+      font-size: .72rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: .75rem;
+    }
+
+    /* ── Problem Section ── */
+    .problem {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 5rem auto;
+      padding: 0 2rem;
+    }
+    .problem h2 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -.02em;
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+    .compare-card.bad { border-top: 2px solid var(--red); }
+    .compare-card.good { border-top: 2px solid var(--green); }
+    .compare-card h4 {
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .compare-card.bad h4 { color: var(--red); }
+    .compare-card.good h4 { color: var(--green); }
+    .compare-list { list-style: none; }
+    .compare-list li {
+      font-size: .88rem;
+      color: var(--muted);
+      padding: .45rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .compare-list li:last-child { border-bottom: none; }
+    .compare-list li .ico { flex-shrink: 0; }
+
+    /* ── How It Works ── */
+    .how {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem;
+      margin: 4rem 0;
+    }
+    .how-inner { max-width: 900px; margin: 0 auto; }
+    .how h2 {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -.02em;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+    .step { text-align: center; }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .step h4 {
+      font-weight: 700;
+      margin-bottom: .5rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .step p {
+      font-size: .85rem;
+      color: var(--muted);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* ── Signals ── */
+    .signals {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+    .signals h2 {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -.02em;
+    }
+    .signals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .signal-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .82rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .signal-chip .sig-icon { font-size: 1.3rem; }
+    .signal-chip .sig-text { color: var(--muted); }
+
+    /* ── Use Cases ── */
+    .usecases {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto 5rem;
+      padding: 0 2rem;
+    }
+    .usecases h2 {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -.02em;
+    }
+    .uc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .uc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .uc-card .uc-icon { font-size: 1.8rem; margin-bottom: .75rem; }
+    .uc-card h4 {
+      font-weight: 700;
+      margin-bottom: .4rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--accent);
+    }
+    .uc-card p {
+      font-size: .85rem;
+      color: var(--muted);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* ── Final CTA ── */
+    .final-cta {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 2rem 6rem;
+    }
+    .final-cta h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -.02em;
+    }
+    .final-cta p {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: .78rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="logo">Local<span>Score</span></div>
+  <div class="nav-right">
+    <span class="nav-badge">Private Beta</span>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-pill">
+      <div class="pulse"></div>
+      API · Now in Private Beta
+    </div>
+    <h1>Location Risk Intelligence<br/><span class="highlight">Without Police Data</span></h1>
+    <p class="subheadline">AI-powered crime correlation scoring using proxy signals. Built for proptech, real estate platforms, and insurance underwriters.</p>
+    <div class="target-badges">
+      <span class="badge badge-blue">🏢 PropTech Platforms</span>
+      <span class="badge badge-teal">🏠 Real Estate APIs</span>
+      <span class="badge badge-green">📋 Insurance Underwriting</span>
+    </div>
+  </div>
+
+  <!-- Heatmap Mock -->
+  <div class="heatmap-panel">
+    <div class="heatmap-header">
+      <span>RISK HEATMAP</span>
+      <span>LIVE DEMO</span>
+    </div>
+    <div class="heatmap-grid" id="heatmap"></div>
+    <div class="score-bar">
+      <div>
+        <div class="label">COMPOSITE RISK SCORE</div>
+        <div class="score-track"><div class="score-fill"></div></div>
+      </div>
+      <div class="score-val">3.2 / 10</div>
+    </div>
+    <div class="data-rows">
+      <div class="data-row">
+        <span class="key">Environmental Density</span>
+        <span class="val green">Low ↓</span>
+      </div>
+      <div class="data-row">
+        <span class="key">Vacancy Signal</span>
+        <span class="val orange">Moderate</span>
+      </div>
+      <div class="data-row">
+        <span class="key">Infrastructure Decay</span>
+        <span class="val green">Low ↓</span>
+      </div>
+      <div class="data-row">
+        <span class="key">Foot Traffic Index</span>
+        <span class="val green">High ↑</span>
+      </div>
+      <div class="data-row">
+        <span class="key">Police Data Used</span>
+        <span class="val" style="color:var(--accent)">None ✓</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem -->
+<section class="problem">
+  <h2>The problem with crime data APIs</h2>
+  <div class="compare-grid">
+    <div class="compare-card bad">
+      <h4>❌ Traditional Approach</h4>
+      <ul class="compare-list">
+        <li><span class="ico">🔴</span> Relies on police-reported crime data</li>
+        <li><span class="ico">🔴</span> 40%+ of crimes never get reported</li>
+        <li><span class="ico">🔴</span> Inconsistent across jurisdictions</li>
+        <li><span class="ico">🔴</span> Racially biased enforcement patterns</li>
+        <li><span class="ico">🔴</span> Lags reality by 6–18 months</li>
+        <li><span class="ico">🔴</span> Legal exposure under Fair Housing Act</li>
+      </ul>
+    </div>
+    <div class="compare-card good">
+      <h4>✓ LocalScore Approach</h4>
+      <ul class="compare-list">
+        <li><span class="ico">🟢</span> Proxy signals from environmental data</li>
+        <li><span class="ico">🟢</span> Covers what police data misses</li>
+        <li><span class="ico">🟢</span> Consistent, API-normalized scores</li>
+        <li><span class="ico">🟢</span> Trained to remove enforcement bias</li>
+        <li><span class="ico">🟢</span> Updated weekly, near real-time</li>
+        <li><span class="ico">🟢</span> Defensible, bias-tested methodology</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how">
+  <div class="how-inner">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Ingest Signals</h4>
+        <p>We collect 40+ environmental proxy signals — vacancy rates, lighting, infrastructure, business density, and more.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>ML Correlation</h4>
+        <p>Our model correlates proxy signals against validated outcome data, without touching police-reported statistics.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Score + Calibrate</h4>
+        <p>Every location gets a 0–10 risk score, confidence interval, and contributing signal breakdown.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>API Delivery</h4>
+        <p>REST API, bulk CSV, or webhook. Plug into your existing platform in under an hour.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Signals -->
+<section class="signals">
+  <h2>Proxy signals we use</h2>
+  <div class="signals-grid">
+    <div class="signal-chip"><span class="sig-icon">💡</span><span class="sig-text">Streetlight coverage</span></div>
+    <div class="signal-chip"><span class="sig-icon">🏚️</span><span class="sig-text">Vacancy & abandonment</span></div>
+    <div class="signal-chip"><span class="sig-icon">🚶</span><span class="sig-text">Pedestrian foot traffic</span></div>
+    <div class="signal-chip"><span class="sig-icon">🏪</span><span class="sig-text">Business density</span></div>
+    <div class="signal-chip"><span class="sig-icon">🛣️</span><span class="sig-text">Infrastructure condition</span></div>
+    <div class="signal-chip"><span class="sig-icon">🌿</span><span class="sig-text">Green space ratio</span></div>
+    <div class="signal-chip"><span class="sig-icon">📶</span><span class="sig-text">Internet & mobile coverage</span></div>
+    <div class="signal-chip"><span class="sig-icon">🏗️</span><span class="sig-text">Construction activity</span></div>
+    <div class="signal-chip"><span class="sig-icon">🚌</span><span class="sig-text">Transit access score</span></div>
+    <div class="signal-chip"><span class="sig-icon">🏥</span><span class="sig-text">Healthcare proximity</span></div>
+    <div class="signal-chip"><span class="sig-icon">📸</span><span class="sig-text">Street-level imagery</span></div>
+    <div class="signal-chip"><span class="sig-icon">🏫</span><span class="sig-text">School quality index</span></div>
+  </div>
+</section>
+
+<!-- Use Cases -->
+<section class="usecases">
+  <h2>Built for your use case</h2>
+  <div class="uc-grid">
+    <div class="uc-card">
+      <div class="uc-icon">🏠</div>
+      <h4>Real Estate Platforms</h4>
+      <p>Enrich listings with neighborhood risk context. Give buyers better data without the Fair Housing liability of crime labels.</p>
+    </div>
+    <div class="uc-card">
+      <div class="uc-icon">🏗️</div>
+      <h4>PropTech Companies</h4>
+      <p>Power investment scoring, portfolio risk analysis, and automated underwriting with signals that actually predict outcomes.</p>
+    </div>
+    <div class="uc-card">
+      <div class="uc-icon">📋</div>
+      <h4>Insurance Underwriters</h4>
+      <p>Replace unreliable crime indexes with a consistent, auditable, and legally defensible risk signal for property underwriting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <h2>Ready to see it on your data?</h2>
+  <p>We're onboarding a limited number of design partners for private beta. Request a live demo with your actual addresses.</p>
+  <div class="demo-form" style="max-width:440px;margin:0 auto;">
+    <h3>Request a Demo</h3>
+    <p class="form-sub">We'll walk you through a live API call on your dataset.</p>
+    <form action="mailto:oopslabai@gmail.com" method="get" enctype="text/plain">
+      <div class="field">
+        <label>Company Name</label>
+        <input type="text" name="company" placeholder="Acme PropTech Inc." required />
+      </div>
+      <div class="field">
+        <label>Work Email</label>
+        <input type="email" name="email" placeholder="you@company.com" required />
+      </div>
+      <div class="field">
+        <label>Use Case</label>
+        <select name="usecase" required>
+          <option value="" disabled selected>Select your use case...</option>
+          <option value="listing-enrichment">Listing Enrichment / MLS</option>
+          <option value="investment-scoring">Investment Scoring</option>
+          <option value="insurance-underwriting">Insurance Underwriting</option>
+          <option value="portfolio-risk">Portfolio Risk Analysis</option>
+          <option value="mortgage-lending">Mortgage / Lending</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-demo">Request a Demo →</button>
+    </form>
+    <p class="form-privacy">🔒 No spam. Demo request only. We'll respond within 1 business day.</p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 LocalScore by OopsLab AI · <a href="mailto:oopslabai@gmail.com" style="color:var(--muted)">oopslabai@gmail.com</a> · Built for proptech teams who care about accuracy.</p>
+</footer>
+
+<script>
+// Generate heatmap
+(function() {
+  const grid = document.getElementById('heatmap');
+  const palette = [
+    '#00ff8820','#00ff8840','#00ff8860',  // green (low risk)
+    '#00d4ff20','#00d4ff40',               // blue (medium)
+    '#ff6b3530','#ff6b3550','#ff6b3570',  // orange (elevated)
+    '#ff335530','#ff335550',               // red (high)
+  ];
+  const weights = [15,12,10,8,8,7,7,6,4,3]; // bias toward green
+  const total = 18 * 12;
+  
+  for(let i = 0; i < total; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'heatmap-cell';
+    // Weighted random
+    const rand = Math.random() * 80;
+    let acc = 0, chosen = palette[0];
+    for(let j = 0; j < weights.length; j++) {
+      acc += weights[j];
+      if(rand < acc) { chosen = palette[j]; break; }
+    }
+    cell.style.background = chosen;
+    // Cluster effect: neighbors influence each other
+    if(Math.random() < 0.05) {
+      cell.style.background = '#ff335560';
+    }
+    grid.appendChild(cell);
+  }
+})();
+</script>
+</body>
+</html>
