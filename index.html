@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LocalScore – Location Risk Intelligence Powered by Data Correlation</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     /* ── Reset & Variables ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -146,6 +147,9 @@
       border-radius: 4px;
       font-weight: 600;
       letter-spacing: .03em;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
     }
     .badge-blue  { background: rgba(0,102,255,.15); color: #6699ff; border: 1px solid rgba(0,102,255,.25); }
     .badge-teal  { background: rgba(0,212,255,.1);  color: var(--accent); border: 1px solid rgba(0,212,255,.2); }
@@ -302,6 +306,10 @@
       color: var(--muted);
       text-align: center;
       margin-top: .75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .3rem;
     }
 
     /* ── Problem Section ── */
@@ -340,6 +348,9 @@
       text-transform: uppercase;
       margin-bottom: 1rem;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
     }
     .compare-card.bad h4 { color: var(--red); }
     .compare-card.good h4 { color: var(--green); }
@@ -438,7 +449,7 @@
       font-size: .82rem;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .signal-chip .sig-icon { font-size: 1.3rem; }
+    .signal-chip .sig-icon { flex-shrink: 0; display: flex; align-items: center; }
     .signal-chip .sig-text { color: var(--muted); }
 
     /* ── Use Cases ── */
@@ -468,7 +479,7 @@
       border-radius: var(--radius);
       padding: 1.5rem;
     }
-    .uc-card .uc-icon { font-size: 1.8rem; margin-bottom: .75rem; }
+    .uc-card .uc-icon { margin-bottom: .75rem; }
     .uc-card h4 {
       font-weight: 700;
       margin-bottom: .4rem;
@@ -535,9 +546,9 @@
     <h1>Location Risk Intelligence<br/><span class="highlight">Powered by Data Correlation</span></h1>
     <p class="subheadline">We combine government census data with crime statistics to find predictive correlations most APIs miss. AI-powered scoring that goes beyond raw crime reports — built for proptech, real estate platforms, and insurance underwriters.</p>
     <div class="target-badges">
-      <span class="badge badge-blue">🏢 PropTech Platforms</span>
-      <span class="badge badge-teal">🏠 Real Estate APIs</span>
-      <span class="badge badge-green">📋 Insurance Underwriting</span>
+      <span class="badge badge-blue"><i data-lucide="building-2" style="width:14px;height:14px;"></i> PropTech Platforms</span>
+      <span class="badge badge-teal"><i data-lucide="home" style="width:14px;height:14px;"></i> Real Estate APIs</span>
+      <span class="badge badge-green"><i data-lucide="clipboard-list" style="width:14px;height:14px;"></i> Insurance Underwriting</span>
     </div>
   </div>
 
@@ -585,25 +596,25 @@
   <h2>Why existing crime data APIs fall short</h2>
   <div class="compare-grid">
     <div class="compare-card bad">
-      <h4>❌ CrimeoMeter, CrimeGrade, etc.</h4>
+      <h4><i data-lucide="x-circle" style="width:16px;height:16px;"></i> CrimeoMeter, CrimeGrade, etc.</h4>
       <ul class="compare-list">
-        <li><span class="ico">🔴</span> Just repackages police department reports</li>
-        <li><span class="ico">🔴</span> 40%+ of crimes never get reported</li>
-        <li><span class="ico">🔴</span> Inconsistent across jurisdictions</li>
-        <li><span class="ico">🔴</span> Biased by enforcement patterns</li>
-        <li><span class="ico">🔴</span> Stale data — lags reality by 6–18 months</li>
-        <li><span class="ico">🔴</span> No predictive intelligence, just historical counts</li>
+        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Just repackages police department reports</li>
+        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> 40%+ of crimes never get reported</li>
+        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Inconsistent across jurisdictions</li>
+        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Biased by enforcement patterns</li>
+        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Stale data — lags reality by 6–18 months</li>
+        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> No predictive intelligence, just historical counts</li>
       </ul>
     </div>
     <div class="compare-card good">
-      <h4>✓ LocalScore Approach</h4>
+      <h4><i data-lucide="check-circle" style="width:16px;height:16px;"></i> LocalScore Approach</h4>
       <ul class="compare-list">
-        <li><span class="ico">🟢</span> Correlates census data with crime patterns via AI</li>
-        <li><span class="ico">🟢</span> Predicts risk where reports don't exist</li>
-        <li><span class="ico">🟢</span> Consistent, API-normalized scores nationwide</li>
-        <li><span class="ico">🟢</span> Statistically removes enforcement bias</li>
-        <li><span class="ico">🟢</span> Expanding to live data sources (Citizen, OSM)</li>
-        <li><span class="ico">🟢</span> Predictive, not just descriptive</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Correlates census data with crime patterns via AI</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Predicts risk where reports don't exist</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Consistent, API-normalized scores nationwide</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Statistically removes enforcement bias</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Expanding to live data sources (Citizen, OSM)</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Predictive, not just descriptive</li>
       </ul>
     </div>
   </div>
@@ -616,28 +627,28 @@
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2rem;">
       <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1rem;text-align:center;">
         <div style="background:rgba(0,102,255,.12);border:1px solid rgba(0,102,255,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="font-size:2rem;margin-bottom:.4rem;">🏛️</div>
+          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="landmark" style="width:32px;height:32px;color:#6699ff;"></i></div>
           <div style="font-size:.75rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Source</div>
           <div style="font-size:.9rem;color:var(--text);font-weight:600;">US Census Data</div>
           <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Demographics, income, housing, education, employment</div>
         </div>
         <div style="font-size:1.5rem;color:var(--muted);">→</div>
         <div style="background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="font-size:2rem;margin-bottom:.4rem;">🚨</div>
+          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="siren" style="width:32px;height:32px;color:var(--orange);"></i></div>
           <div style="font-size:.75rem;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Source</div>
           <div style="font-size:.9rem;color:var(--text);font-weight:600;">NYC Crime Data</div>
           <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">NYPD CompStat, incident-level records, geo-tagged</div>
         </div>
         <div style="font-size:1.5rem;color:var(--muted);">→</div>
         <div style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="font-size:2rem;margin-bottom:.4rem;">🤖</div>
+          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="cpu" style="width:32px;height:32px;color:var(--accent);"></i></div>
           <div style="font-size:.75rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">AI Engine</div>
           <div style="font-size:.9rem;color:var(--text);font-weight:600;">Correlation Model</div>
           <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Statistical analysis finds predictive patterns between datasets</div>
         </div>
         <div style="font-size:1.5rem;color:var(--muted);">→</div>
         <div style="background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="font-size:2rem;margin-bottom:.4rem;">📊</div>
+          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="bar-chart-3" style="width:32px;height:32px;color:var(--green);"></i></div>
           <div style="font-size:.75rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Output</div>
           <div style="font-size:.9rem;color:var(--text);font-weight:600;">Risk Score API</div>
           <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">0-10 score per location with confidence intervals</div>
@@ -732,18 +743,18 @@
   <h2>Data sources powering our model</h2>
   <p style="text-align:center;color:var(--muted);margin-bottom:2rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:.9rem;">Currently live in NYC. Expanding nationwide.</p>
   <div class="signals-grid">
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon">🏛️</span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — US Census Data</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon">🚨</span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — NYC Crime Data</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon">💰</span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Income & Poverty</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon">🎓</span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Education Levels</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon">🏚️</span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Housing & Vacancy</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon">👥</span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Population Density</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon">🗺️</span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — OpenStreetMap</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon">🏪</span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — Business Density</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon">🚌</span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — Transit Access</span></div>
-    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon">📱</span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Citizen App (live)</span></div>
-    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon">📸</span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Street Imagery</span></div>
-    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon">🛰️</span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Satellite Data</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="landmark" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — US Census Data</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="siren" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — NYC Crime Data</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="dollar-sign" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Income &amp; Poverty</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="graduation-cap" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Education Levels</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="home" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Housing &amp; Vacancy</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="users" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Population Density</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="map" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — OpenStreetMap</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="store" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — Business Density</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="bus" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — Transit Access</span></div>
+    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon"><i data-lucide="smartphone" style="width:20px;height:20px;color:var(--orange);"></i></span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Citizen App (live)</span></div>
+    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon"><i data-lucide="camera" style="width:20px;height:20px;color:var(--orange);"></i></span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Street Imagery</span></div>
+    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon"><i data-lucide="satellite-dish" style="width:20px;height:20px;color:var(--orange);"></i></span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Satellite Data</span></div>
   </div>
 </section>
 
@@ -752,7 +763,7 @@
   <h2>Product roadmap</h2>
   <div class="uc-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
     <div class="uc-card" style="border-top:2px solid var(--green);">
-      <div style="font-size:.7rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">✓ Now</div>
+      <div style="font-size:.7rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:13px;height:13px;"></i> Now</div>
       <h4 style="color:var(--green);">NYC Census + Crime</h4>
       <p>Statistical correlation model trained on US Census demographics and NYPD incident data. Block-level scoring.</p>
     </div>
@@ -773,20 +784,22 @@
     </div>
   </div>
 </section>
+
+<section class="usecases">
   <h2>Built for your use case</h2>
   <div class="uc-grid">
     <div class="uc-card">
-      <div class="uc-icon">🏠</div>
+      <div class="uc-icon"><i data-lucide="home" style="width:28px;height:28px;color:var(--accent);"></i></div>
       <h4>Real Estate Platforms</h4>
       <p>Enrich listings with neighborhood risk context. Give buyers better data without the Fair Housing liability of crime labels.</p>
     </div>
     <div class="uc-card">
-      <div class="uc-icon">🏗️</div>
+      <div class="uc-icon"><i data-lucide="hammer" style="width:28px;height:28px;color:var(--accent);"></i></div>
       <h4>PropTech Companies</h4>
       <p>Power investment scoring, portfolio risk analysis, and automated underwriting with signals that actually predict outcomes.</p>
     </div>
     <div class="uc-card">
-      <div class="uc-icon">📋</div>
+      <div class="uc-icon"><i data-lucide="clipboard-list" style="width:28px;height:28px;color:var(--accent);"></i></div>
       <h4>Insurance Underwriters</h4>
       <p>Replace unreliable crime indexes with a consistent, auditable, and legally defensible risk signal for property underwriting.</p>
     </div>
@@ -800,7 +813,10 @@
   <div class="demo-form" style="max-width:440px;margin:0 auto;">
     <h3>Request a Demo</h3>
     <p class="form-sub">We'll walk you through a live API call on your dataset.</p>
-    <form action="mailto:oopslabai@gmail.com" method="get" enctype="text/plain">
+    <form action="https://formsubmit.co/oopslabai@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="LocalScore Demo Request">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://oops-lab-ai.github.io/localscore/thanks.html">
       <div class="field">
         <label>Company Name</label>
         <input type="text" name="company" placeholder="Acme PropTech Inc." required />
@@ -823,7 +839,7 @@
       </div>
       <button type="submit" class="btn-demo">Request a Demo →</button>
     </form>
-    <p class="form-privacy">🔒 No spam. Demo request only. We'll respond within 1 business day.</p>
+    <p class="form-privacy"><i data-lucide="lock" style="width:12px;height:12px;"></i> No spam. Demo request only. We'll respond within 1 business day.</p>
   </div>
 </section>
 
@@ -863,5 +879,6 @@
   }
 })();
 </script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
