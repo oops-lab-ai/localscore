@@ -544,7 +544,7 @@
       API · Now in Private Beta
     </div>
     <h1>Location Risk Intelligence<br/><span class="highlight">Powered by Data Correlation</span></h1>
-    <p class="subheadline">We combine government census data with crime statistics to find predictive correlations most APIs miss. AI-powered scoring that goes beyond raw crime reports — built for proptech, real estate platforms, and insurance underwriters.</p>
+    <p class="subheadline">We combine government datasets with municipal records to find predictive correlations most APIs miss. AI-powered scoring that goes beyond raw crime reports — built for proptech, real estate platforms, and insurance underwriters.</p>
     <div class="target-badges">
       <span class="badge badge-blue"><i data-lucide="building-2" style="width:14px;height:14px;"></i> PropTech Platforms</span>
       <span class="badge badge-teal"><i data-lucide="home" style="width:14px;height:14px;"></i> Real Estate APIs</span>
@@ -568,7 +568,7 @@
     </div>
     <div class="data-rows">
       <div class="data-row">
-        <span class="key">Census Correlation</span>
+        <span class="key">Data Correlation</span>
         <span class="val green">Strong ↑</span>
       </div>
       <div class="data-row">
@@ -585,7 +585,7 @@
       </div>
       <div class="data-row">
         <span class="key">Data Sources</span>
-        <span class="val" style="color:var(--accent)">Census + Crime + OSM</span>
+        <span class="val" style="color:var(--accent)">Gov + Municipal + Geo</span>
       </div>
     </div>
   </div>
@@ -609,7 +609,7 @@
     <div class="compare-card good">
       <h4><i data-lucide="check-circle" style="width:16px;height:16px;"></i> LocalScore Approach</h4>
       <ul class="compare-list">
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Correlates census data with crime patterns via AI</li>
+        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Correlates government data with incident patterns via AI</li>
         <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Predicts risk where reports don't exist</li>
         <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Consistent, API-normalized scores nationwide</li>
         <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Statistically removes enforcement bias</li>
@@ -629,15 +629,15 @@
         <div style="background:rgba(0,102,255,.12);border:1px solid rgba(0,102,255,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
           <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="landmark" style="width:32px;height:32px;color:#6699ff;"></i></div>
           <div style="font-size:.75rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Source</div>
-          <div style="font-size:.9rem;color:var(--text);font-weight:600;">US Census Data</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Demographics, income, housing, education, employment</div>
+          <div style="font-size:.9rem;color:var(--text);font-weight:600;">Government Data</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Federal demographic, economic, and housing datasets</div>
         </div>
         <div style="font-size:1.5rem;color:var(--muted);">→</div>
         <div style="background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
           <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="siren" style="width:32px;height:32px;color:var(--orange);"></i></div>
           <div style="font-size:.75rem;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Source</div>
-          <div style="font-size:.9rem;color:var(--text);font-weight:600;">NYC Crime Data</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">NYPD CompStat, incident-level records, geo-tagged</div>
+          <div style="font-size:.9rem;color:var(--text);font-weight:600;">Municipal Incident Data</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Geo-tagged incident records from public safety agencies</div>
         </div>
         <div style="font-size:1.5rem;color:var(--muted);">→</div>
         <div style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
@@ -659,30 +659,30 @@
     <!-- Mock correlation chart -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;">
-        <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Correlation Accuracy — Census Signals</div>
+        <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Correlation Accuracy — Key Signals</div>
         <div style="display:flex;flex-direction:column;gap:.6rem;">
           <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Median Income</span>
+            <span style="font-size:.8rem;color:var(--muted);width:120px;">Economic Index</span>
             <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:87%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;"></div></div>
             <span style="font-size:.8rem;color:var(--green);font-weight:700;width:40px;">87%</span>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Vacancy Rate</span>
+            <span style="font-size:.8rem;color:var(--muted);width:120px;">Vacancy Signal</span>
             <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:82%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;"></div></div>
             <span style="font-size:.8rem;color:var(--green);font-weight:700;width:40px;">82%</span>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Education Level</span>
+            <span style="font-size:.8rem;color:var(--muted);width:120px;">Social Factor</span>
             <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:79%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;"></div></div>
             <span style="font-size:.8rem;color:var(--green);font-weight:700;width:40px;">79%</span>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Pop. Density</span>
+            <span style="font-size:.8rem;color:var(--muted);width:120px;">Density Score</span>
             <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:74%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;"></div></div>
             <span style="font-size:.8rem;color:var(--accent);font-weight:700;width:40px;">74%</span>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Unemployment</span>
+            <span style="font-size:.8rem;color:var(--muted);width:120px;">Labor Signal</span>
             <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:71%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;"></div></div>
             <span style="font-size:.8rem;color:var(--accent);font-weight:700;width:40px;">71%</span>
           </div>
@@ -695,11 +695,11 @@
   "risk_score": 3.2,
   "confidence": 0.91,
   "signals": {
-    "census_correlation": 0.87,
-    "vacancy_index": 0.34,
-    "income_deviation": -0.12,
-    "education_factor": 0.79,
-    "density_score": 0.74
+    "data_correlation": 0.87,
+    "vacancy_signal": 0.34,
+    "economic_deviation": -0.12,
+    "social_factor": 0.79,
+    "density_index": 0.74
   },
   "prediction_window": "90_days",
   "data_freshness": "2026-02-15"
@@ -717,17 +717,17 @@
       <div class="step">
         <div class="step-num">1</div>
         <h4>Ingest Government Data</h4>
-        <p>We pull US Census data (demographics, income, housing, education) and NYC crime incident records at the block level.</p>
+        <p>We ingest federal, state, and municipal datasets — demographic, economic, housing, and public safety records — at the block level.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <h4>AI Correlation Engine</h4>
-        <p>Our model finds statistical correlations between census variables and crime patterns — identifying which factors actually predict risk.</p>
+        <p>Our model finds statistical correlations between demographic variables and incident patterns — identifying which factors actually predict risk.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <h4>Score + Predict</h4>
-        <p>Every location gets a 0–10 risk score based on census data alone — no crime report needed. The model predicts what police data can't tell you.</p>
+        <p>Every location gets a 0–10 risk score from our correlation model — no crime report needed. The model predicts what police data can't tell you.</p>
       </div>
       <div class="step">
         <div class="step-num">4</div>
@@ -743,10 +743,10 @@
   <h2>Data sources powering our model</h2>
   <p style="text-align:center;color:var(--muted);margin-bottom:2rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:.9rem;">Currently live in NYC. Expanding nationwide.</p>
   <div class="signals-grid">
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="landmark" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — US Census Data</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="siren" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — NYC Crime Data</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="landmark" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Government Data</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="siren" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Municipal Incident Data</span></div>
     <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="dollar-sign" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Income &amp; Poverty</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="graduation-cap" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Education Levels</span></div>
+    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="graduation-cap" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Social Factors</span></div>
     <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="home" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Housing &amp; Vacancy</span></div>
     <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="users" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Population Density</span></div>
     <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="map" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — OpenStreetMap</span></div>
@@ -765,7 +765,7 @@
     <div class="uc-card" style="border-top:2px solid var(--green);">
       <div style="font-size:.7rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:13px;height:13px;"></i> Now</div>
       <h4 style="color:var(--green);">NYC Census + Crime</h4>
-      <p>Statistical correlation model trained on US Census demographics and NYPD incident data. Block-level scoring.</p>
+      <p>Statistical correlation model trained on government demographic and municipal incident data. Block-level scoring.</p>
     </div>
     <div class="uc-card" style="border-top:2px solid var(--accent);">
       <div style="font-size:.7rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">→ Q2 2026</div>
