@@ -522,6 +522,130 @@
       font-size: .78rem;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+
+    /* ── Hero City Background Image ── */
+    .hero-city-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-city-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.09;
+      display: block;
+    }
+    .hero { overflow: hidden; }
+
+    /* ── Use Case Card Images ── */
+    .uc-card-img {
+      display: block;
+      width: calc(100% + 3rem);
+      height: 120px;
+      object-fit: cover;
+      border-radius: var(--radius) var(--radius) 0 0;
+      margin: -1.5rem -1.5rem 1rem -1.5rem;
+    }
+
+    /* ── Data Credibility / Trust Strip ── */
+    .trust-strip {
+      position: relative;
+      z-index: 1;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      margin: 0;
+    }
+    .trust-strip-label {
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 1.25rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: .85rem;
+    }
+    .trust-badge {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .5rem 1rem;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .trust-badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      opacity: .7;
+    }
+
+    /* ── NYC Street Photo Divider ── */
+    .nyc-divider {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-height: 250px;
+      overflow: hidden;
+    }
+    .nyc-divider img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+      opacity: 0.55;
+    }
+    .nyc-divider::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 70px;
+      background: linear-gradient(to bottom, var(--bg), transparent);
+      z-index: 1;
+    }
+    .nyc-divider::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 70px;
+      background: linear-gradient(to top, var(--bg), transparent);
+      z-index: 1;
+    }
+
+    /* ── Roadmap Dashboard Visual ── */
+    .roadmap-visual-wrap {
+      margin-top: 2rem;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 32px rgba(0,0,0,.45);
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .roadmap-visual-wrap img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
@@ -538,6 +662,11 @@
 
 <!-- Hero -->
 <section class="hero">
+  <!-- Subtle aerial city background -->
+  <div class="hero-city-bg" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1400&q=80&auto=format"
+         alt="" loading="lazy" />
+  </div>
   <div class="hero-text">
     <div class="hero-pill">
       <div class="pulse"></div>
@@ -709,10 +838,20 @@
   </div>
 </section>
 
+<!-- Data Credibility Strip -->
+<div class="trust-strip">
+  <p class="trust-strip-label">Powered by authoritative government data sources</p>
+  <div class="trust-badges">
+    <span class="trust-badge"><span class="trust-badge-dot"></span>US Census Bureau</span>
+    <span class="trust-badge"><span class="trust-badge-dot"></span>NYC Open Data</span>
+    <span class="trust-badge"><span class="trust-badge-dot"></span>American Community Survey</span>
+    <span class="trust-badge"><span class="trust-badge-dot"></span>NYPD CompStat</span>
+    <span class="trust-badge"><span class="trust-badge-dot"></span>OpenStreetMap</span>
+  </div>
+</div>
+
 <!-- How It Works -->
 <section class="how">
-  <div class="how-inner">
-    <h2>How it works</h2>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
@@ -737,6 +876,12 @@
     </div>
   </div>
 </section>
+
+<!-- NYC Street Divider -->
+<div class="nyc-divider">
+  <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200&q=80&auto=format"
+       alt="New York City street view" loading="lazy" />
+</div>
 
 <!-- Signals → now "Data Sources" -->
 <section class="signals">
@@ -783,22 +928,36 @@
       <p>Expand beyond NYC to all major US metros. Census data is nationwide — crime data partnerships in progress.</p>
     </div>
   </div>
+  <!-- Roadmap data visualization -->
+  <div class="roadmap-visual-wrap">
+    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&auto=format"
+         alt="Data analytics dashboard showing location risk visualization" loading="lazy" />
+  </div>
 </section>
 
 <section class="usecases">
   <h2>Built for your use case</h2>
   <div class="uc-grid">
     <div class="uc-card">
+      <img class="uc-card-img"
+           src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80&auto=format"
+           alt="Aerial view of buildings for real estate platforms" loading="lazy" />
       <div class="uc-icon"><i data-lucide="home" style="width:28px;height:28px;color:var(--accent);"></i></div>
       <h4>Real Estate Platforms</h4>
       <p>Enrich listings with neighborhood risk context. Give buyers better data without the Fair Housing liability of crime labels.</p>
     </div>
     <div class="uc-card">
+      <img class="uc-card-img"
+           src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80&auto=format"
+           alt="Glass office buildings representing PropTech companies" loading="lazy" />
       <div class="uc-icon"><i data-lucide="hammer" style="width:28px;height:28px;color:var(--accent);"></i></div>
       <h4>PropTech Companies</h4>
       <p>Power investment scoring, portfolio risk analysis, and automated underwriting with signals that actually predict outcomes.</p>
     </div>
     <div class="uc-card">
+      <img class="uc-card-img"
+           src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80&auto=format"
+           alt="Insurance paperwork and desk for underwriting use case" loading="lazy" />
       <div class="uc-icon"><i data-lucide="clipboard-list" style="width:28px;height:28px;color:var(--accent);"></i></div>
       <h4>Insurance Underwriters</h4>
       <p>Replace unreliable crime indexes with a consistent, auditable, and legally defensible risk signal for property underwriting.</p>
