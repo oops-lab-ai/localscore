@@ -4,209 +4,437 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LocalScore – Location Risk Intelligence Powered by Data Correlation</title>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <meta name="description" content="AI-powered location risk scoring that goes beyond crime reports. Correlates government datasets with municipal records for predictive intelligence. Built for PropTech, real estate, and insurance." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ── Reset & Variables ── */
+    /* ═══════════════════════════════════════
+       RESET & VARIABLES
+       ═══════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #06090f;
-      --surface:   #0d1320;
-      --surface2:  #111827;
-      --border:    #1e2a3a;
-      --accent:    #00d4ff;
-      --accent2:   #0066ff;
-      --green:     #00ff88;
-      --orange:    #ff6b35;
-      --red:       #ff3355;
-      --text:      #e2e8f0;
-      --muted:     #64748b;
-      --radius:    10px;
-      --shadow:    0 8px 48px rgba(0,212,255,.08);
+      --bg:         #050507;
+      --bg-subtle:  #08080c;
+      --surface:    #0c0c11;
+      --surface2:   #111118;
+      --border:     #1c1c26;
+      --border-light:#2a2a38;
+      --amber:      #e8a87c;
+      --amber-dim:  #c4885e;
+      --amber-glow: rgba(232,168,124,.08);
+      --green:      #34d399;
+      --red:        #f87171;
+      --yellow:     #fbbf24;
+      --teal:       #2dd4bf;
+      --text:       #d4d0c8;
+      --text-bright:#ece8e0;
+      --muted:      #6b6770;
+      --muted-light:#8a8690;
+      --serif:      'Instrument Serif', Georgia, serif;
+      --sans:       'Outfit', system-ui, sans-serif;
+      --mono:       'IBM Plex Mono', 'Consolas', monospace;
+      --radius:     8px;
+      --max-w:      1080px;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: "SF Mono", "Fira Code", "Consolas", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.6;
+      font-family: var(--sans);
+      font-weight: 400;
+      line-height: 1.65;
       min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Nav ── */
+    /* ═══════════════════════════════════════
+       NOISE GRAIN OVERLAY
+       ═══════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: .035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+    }
+
+    /* ═══════════════════════════════════════
+       TOPOGRAPHIC CONTOUR BACKGROUND
+       ═══════════════════════════════════════ */
+    .topo-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .025;
+      background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='t' x='0' y='0' width='600' height='600' patternUnits='userSpaceOnUse'%3E%3Cellipse cx='300' cy='300' rx='280' ry='260' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='300' cy='300' rx='230' ry='210' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='300' cy='300' rx='180' ry='165' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='300' cy='300' rx='130' ry='120' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='300' cy='300' rx='80' ry='75' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='300' cy='300' rx='35' ry='32' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='150' cy='450' rx='120' ry='100' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='150' cy='450' rx='70' ry='55' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='480' cy='120' rx='100' ry='90' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3Cellipse cx='480' cy='120' rx='50' ry='42' fill='none' stroke='%23e8a87c' stroke-width='.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23t)'/%3E%3C/svg%3E");
+    }
+
+    /* ═══════════════════════════════════════
+       UTILITIES
+       ═══════════════════════════════════════ */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 2rem; }
+    a { color: var(--amber); text-decoration: none; transition: color .2s; }
+    a:hover { color: var(--text-bright); }
+    ::selection { background: rgba(232,168,124,.25); color: var(--text-bright); }
+
+    /* Fade-in on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════════ */
     nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2.5rem;
+      padding: 1.1rem 2.5rem;
+      background: rgba(5,5,7,.85);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: rgba(6,9,15,.95);
-      backdrop-filter: blur(16px);
-      z-index: 100;
     }
     .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: -.5px;
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      color: var(--text-bright);
+      letter-spacing: -.02em;
     }
-    .logo span { color: var(--text); }
-    .nav-right { display: flex; gap: 1rem; align-items: center; }
-    .nav-badge {
-      font-size: .72rem;
-      background: rgba(0,212,255,.1);
-      color: var(--accent);
-      border: 1px solid rgba(0,212,255,.25);
-      padding: .25rem .75rem;
-      border-radius: 4px;
-      letter-spacing: .05em;
+    .logo em {
+      font-style: italic;
+      color: var(--amber);
+    }
+    .nav-right { display: flex; align-items: center; gap: 1.25rem; }
+    .nav-tag {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .1em;
       text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(232,168,124,.25);
+      padding: .3rem .85rem;
+      border-radius: 3px;
+      background: rgba(232,168,124,.05);
+    }
+    .nav-cta {
+      font-family: var(--sans);
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--amber);
+      border: none;
+      padding: .5rem 1.25rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+      text-decoration: none;
+    }
+    .nav-cta:hover { opacity: .88; transform: translateY(-1px); color: var(--bg); }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-cta { display: none; }
     }
 
-    /* ── Grid Background ── */
-    .grid-bg {
-      position: fixed;
+    /* ═══════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════ */
+    .hero {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 2rem 5rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-bg-img {
+      position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-image:
-        linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1400&q=80&auto=format') center center / cover no-repeat;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Warm radial glow behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 700px;
+      background: radial-gradient(ellipse, rgba(232,168,124,.06) 0%, rgba(232,168,124,.02) 40%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── Hero ── */
-    .hero {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 6rem 2rem 4rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-    @media (max-width: 768px) {
-      .hero { grid-template-columns: 1fr; padding: 4rem 1.5rem 3rem; gap: 2.5rem; }
-    }
-    .hero-pill {
+    .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: .4rem;
-      background: rgba(0,212,255,.08);
-      color: var(--accent);
-      border: 1px solid rgba(0,212,255,.2);
-      padding: .3rem .85rem;
-      border-radius: 4px;
-      font-size: .75rem;
-      font-weight: 600;
+      gap: .5rem;
+      font-family: var(--mono);
+      font-size: .7rem;
+      font-weight: 500;
       letter-spacing: .08em;
       text-transform: uppercase;
-      margin-bottom: 1.5rem;
+      color: var(--amber);
+      border: 1px solid rgba(232,168,124,.2);
+      background: rgba(232,168,124,.04);
+      padding: .4rem 1.1rem;
+      border-radius: 3px;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 1;
     }
-    .pulse {
+    .pulse-dot {
       width: 6px; height: 6px;
       background: var(--green);
       border-radius: 50%;
-      animation: pulse 1.5s ease-in-out infinite;
+      animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .5; transform: scale(1.5); }
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
+      50% { opacity: .7; box-shadow: 0 0 0 6px rgba(52,211,153,0); }
     }
-    h1 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      line-height: 1.2;
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 6.5vw, 4.5rem);
+      font-weight: 400;
+      line-height: 1.08;
       letter-spacing: -.03em;
-      margin-bottom: 1.2rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-bright);
+      max-width: 820px;
+      margin: 0 auto 1.75rem;
+      position: relative;
+      z-index: 1;
     }
-    h1 .highlight {
-      color: var(--accent);
+    .hero h1 em {
+      font-style: italic;
+      color: var(--amber);
     }
-    .subheadline {
-      font-size: 1rem;
-      color: var(--muted);
-      margin-bottom: 2rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.65;
+
+    .hero-sub {
+      font-family: var(--sans);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--muted-light);
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
     }
-    .target-badges {
+
+    .hero-audiences {
       display: flex;
       flex-wrap: wrap;
-      gap: .5rem;
-      margin-bottom: 2rem;
+      justify-content: center;
+      gap: .6rem;
+      margin-bottom: 3rem;
+      position: relative;
+      z-index: 1;
     }
-    .badge {
-      font-size: .72rem;
-      padding: .25rem .65rem;
-      border-radius: 4px;
-      font-weight: 600;
-      letter-spacing: .03em;
+    .audience-tag {
+      font-family: var(--mono);
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 3px;
       display: inline-flex;
       align-items: center;
-      gap: .35rem;
+      gap: .4rem;
     }
-    .badge-blue  { background: rgba(0,102,255,.15); color: #6699ff; border: 1px solid rgba(0,102,255,.25); }
-    .badge-teal  { background: rgba(0,212,255,.1);  color: var(--accent); border: 1px solid rgba(0,212,255,.2); }
-    .badge-green { background: rgba(0,255,136,.08); color: var(--green);  border: 1px solid rgba(0,255,136,.2); }
+    .audience-tag svg { width: 14px; height: 14px; }
+    .audience-tag.t1 { color: var(--teal); border: 1px solid rgba(45,212,191,.2); background: rgba(45,212,191,.04); }
+    .audience-tag.t2 { color: var(--amber); border: 1px solid rgba(232,168,124,.2); background: rgba(232,168,124,.04); }
+    .audience-tag.t3 { color: var(--green); border: 1px solid rgba(52,211,153,.2); background: rgba(52,211,153,.04); }
 
-    /* ── Heatmap ── */
-    .heatmap-panel {
+    .hero-cta {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--amber);
+      padding: .85rem 2.5rem;
+      border-radius: 5px;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 24px rgba(232,168,124,.2);
+    }
+    .hero-cta:hover {
+      opacity: .9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(232,168,124,.3);
+      color: var(--bg);
+    }
+
+    /* ═══════════════════════════════════════
+       DECORATIVE RULE
+       ═══════════════════════════════════════ */
+    .rule {
+      position: relative;
+      z-index: 1;
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+    .rule-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      padding: 1.5rem 0;
+      position: relative;
+      z-index: 1;
+    }
+    .rule-ornament::before,
+    .rule-ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .rule-ornament span {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════
+       RISK VISUALIZATION PANEL (HERO BELOW)
+       ═══════════════════════════════════════ */
+    .viz-section {
+      position: relative;
+      z-index: 1;
+      padding: 0 2rem 5rem;
+    }
+    .viz-panel {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .viz-panel { grid-template-columns: 1fr; }
+    }
+
+    .viz-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.25rem;
-      box-shadow: var(--shadow);
+      padding: 1.5rem;
       position: relative;
-    }
-    .heatmap-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: .75rem;
-      font-size: .72rem;
-      color: var(--muted);
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .heatmap-header span { color: var(--accent); }
-    .heatmap-grid {
-      display: grid;
-      grid-template-columns: repeat(18, 1fr);
-      grid-template-rows: repeat(12, 1fr);
-      gap: 2px;
-      height: 160px;
-      border-radius: 6px;
       overflow: hidden;
     }
-    .heatmap-cell {
-      border-radius: 2px;
-      transition: opacity .3s;
+    .viz-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
+      opacity: .4;
     }
-    .score-bar {
-      margin-top: 1rem;
-      background: var(--bg);
-      border-radius: 4px;
-      padding: .75rem 1rem;
+
+    .viz-label {
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: .8rem;
     }
-    .score-bar .label { color: var(--muted); }
-    .score-bar .score-val {
-      font-weight: 700;
+    .viz-label .live-dot {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
       color: var(--green);
-      font-size: 1.1rem;
+      font-size: .6rem;
+    }
+    .viz-label .live-dot::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Heatmap grid */
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(20, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      gap: 2px;
+      height: 140px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+    .hm-cell {
+      border-radius: 1px;
+      transition: opacity .4s;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem 1rem;
+      background: var(--bg-subtle);
+      border-radius: 5px;
+      margin-bottom: .75rem;
+    }
+    .score-label {
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .score-value {
+      font-family: var(--mono);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--green);
     }
     .score-track {
       width: 100%;
-      height: 4px;
+      height: 3px;
       background: var(--border);
       border-radius: 2px;
       margin-top: .5rem;
@@ -214,58 +442,613 @@
     }
     .score-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--green), var(--accent));
+      width: 32%;
+      background: linear-gradient(90deg, var(--green), var(--teal));
       border-radius: 2px;
-      width: 72%;
+      transition: width 1.5s cubic-bezier(.22,1,.36,1);
     }
-    .data-rows { margin-top: .75rem; }
+
+    .data-rows { display: flex; flex-direction: column; gap: 0; }
     .data-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: .4rem 0;
+      padding: .55rem 0;
       border-bottom: 1px solid var(--border);
-      font-size: .75rem;
+      font-size: .78rem;
     }
     .data-row:last-child { border-bottom: none; }
-    .data-row .key { color: var(--muted); }
-    .data-row .val { font-weight: 600; color: var(--text); }
-    .val.green { color: var(--green); }
-    .val.orange { color: var(--orange); }
-    .val.red { color: var(--red); }
+    .data-row .dk { font-family: var(--sans); color: var(--muted); font-weight: 400; }
+    .data-row .dv { font-family: var(--mono); font-weight: 500; font-size: .75rem; }
+    .dv.green { color: var(--green); }
+    .dv.amber { color: var(--yellow); }
+    .dv.red { color: var(--red); }
+    .dv.teal { color: var(--teal); }
 
-    /* ── Form ── */
-    .demo-form {
+    /* API response card */
+    .api-pre {
+      background: var(--bg);
+      border-radius: 5px;
+      padding: 1.1rem 1.25rem;
+      font-family: var(--mono);
+      font-size: .7rem;
+      line-height: 1.75;
+      color: var(--muted-light);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .api-pre .k { color: var(--amber); }
+    .api-pre .v-str { color: var(--green); }
+    .api-pre .v-num { color: var(--teal); }
+
+    /* ═══════════════════════════════════════
+       SECTION HEADERS
+       ═══════════════════════════════════════ */
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-header .eyebrow {
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-bottom: .75rem;
+    }
+    .section-header h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+      font-weight: 400;
+      color: var(--text-bright);
+      letter-spacing: -.02em;
+      line-height: 1.2;
+    }
+    .section-header h2 em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    /* ═══════════════════════════════════════
+       PROBLEM SECTION (COMPARISON)
+       ═══════════════════════════════════════ */
+    .problem {
       position: relative;
       z-index: 1;
+      padding: 5rem 2rem;
+    }
+    .compare-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 700px) { .compare-grid { grid-template-columns: 1fr; } }
+
+    .compare-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 2rem;
-      max-width: 460px;
+      position: relative;
+    }
+    .compare-card.negative { border-top: 2px solid var(--red); }
+    .compare-card.positive { border-top: 2px solid var(--green); }
+
+    .compare-card h3 {
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .compare-card.negative h3 { color: var(--red); }
+    .compare-card.positive h3 { color: var(--green); }
+    .compare-card h3 svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .compare-list { list-style: none; }
+    .compare-list li {
+      font-size: .88rem;
+      color: var(--muted-light);
+      padding: .5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      line-height: 1.55;
+    }
+    .compare-list li:last-child { border-bottom: none; }
+    .compare-list li svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 3px; }
+    .compare-card.negative .compare-list li svg { color: var(--red); opacity: .7; }
+    .compare-card.positive .compare-list li svg { color: var(--green); opacity: .8; }
+
+    /* ═══════════════════════════════════════
+       PIPELINE SECTION
+       ═══════════════════════════════════════ */
+    .pipeline {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .pipeline-flow {
+      max-width: var(--max-w);
       margin: 0 auto;
-      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      position: relative;
     }
-    .demo-form h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: .4rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    @media (max-width: 800px) {
+      .pipeline-flow { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     }
-    .demo-form .form-sub {
-      font-size: .82rem;
+    @media (max-width: 500px) {
+      .pipeline-flow { grid-template-columns: 1fr; }
+    }
+
+    .pipe-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .pipe-step::after {
+      content: '→';
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translate(50%, -50%);
+      font-size: 1.2rem;
       color: var(--muted);
-      margin-bottom: 1.5rem;
+      font-family: var(--mono);
     }
-    .field {
+    .pipe-step:last-child::after { display: none; }
+    @media (max-width: 800px) {
+      .pipe-step:nth-child(2)::after { display: none; }
+      .pipe-step::after { display: none; }
+    }
+
+    .pipe-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 1rem;
     }
+    .pipe-icon svg { width: 22px; height: 22px; }
+    .pipe-icon.c1 { background: rgba(45,212,191,.1); border: 1px solid rgba(45,212,191,.2); color: var(--teal); }
+    .pipe-icon.c2 { background: rgba(232,168,124,.1); border: 1px solid rgba(232,168,124,.2); color: var(--amber); }
+    .pipe-icon.c3 { background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.2); color: var(--yellow); }
+    .pipe-icon.c4 { background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.2); color: var(--green); }
+
+    .pipe-step .pipe-eyebrow {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .4rem;
+    }
+    .pipe-step.c1 .pipe-eyebrow { color: var(--teal); }
+    .pipe-step.c2 .pipe-eyebrow { color: var(--amber); }
+    .pipe-step.c3 .pipe-eyebrow { color: var(--yellow); }
+    .pipe-step.c4 .pipe-eyebrow { color: var(--green); }
+
+    .pipe-step h4 {
+      font-family: var(--sans);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: .5rem;
+    }
+    .pipe-step p {
+      font-size: .8rem;
+      color: var(--muted-light);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════
+       CORRELATION BARS
+       ═══════════════════════════════════════ */
+    .corr-section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+    }
+    .corr-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 700px) { .corr-grid { grid-template-columns: 1fr; } }
+
+    .corr-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+    .corr-card .corr-title {
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: .7rem;
+    }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-label {
+      font-family: var(--sans);
+      font-size: .78rem;
+      color: var(--muted-light);
+      width: 120px;
+      flex-shrink: 0;
+    }
+    .bar-track {
+      flex: 1;
+      height: 20px;
+      background: var(--bg);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+      transition: width 1.2s cubic-bezier(.22,1,.36,1);
+    }
+    .bar-fill.high { background: linear-gradient(90deg, var(--green), var(--teal)); }
+    .bar-pct {
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--amber);
+      width: 42px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .bar-pct.high { color: var(--green); }
+
+    /* ═══════════════════════════════════════
+       DATA SOURCES
+       ═══════════════════════════════════════ */
+    .sources {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .sources-note {
+      text-align: center;
+      font-family: var(--sans);
+      font-size: .9rem;
+      color: var(--muted-light);
+      margin-bottom: 2.5rem;
+    }
+    .sources-note strong { color: var(--amber); font-weight: 600; }
+
+    .source-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .75rem;
+    }
+    .source-chip {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      padding: .75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: .78rem;
+      color: var(--muted-light);
+      transition: border-color .2s;
+    }
+    .source-chip:hover { border-color: var(--border-light); }
+    .source-chip .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.live { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,.4); }
+    .status-dot.next { background: var(--teal); box-shadow: 0 0 6px rgba(45,212,191,.3); }
+    .status-dot.planned { background: var(--yellow); box-shadow: 0 0 6px rgba(251,191,36,.3); }
+    .source-chip .source-status {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .source-status.live { color: var(--green); }
+    .source-status.next { color: var(--teal); }
+    .source-status.planned { color: var(--yellow); }
+    .source-chip .source-name {
+      font-family: var(--sans);
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ═══════════════════════════════════════
+       ROADMAP
+       ═══════════════════════════════════════ */
+    .roadmap {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+    }
+    .roadmap-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 800px) { .roadmap-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .roadmap-grid { grid-template-columns: 1fr; } }
+
+    .roadmap-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      position: relative;
+    }
+    .roadmap-card .rm-time {
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: .6rem;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .roadmap-card .rm-time svg { width: 12px; height: 12px; }
+    .roadmap-card.now { border-top: 2px solid var(--green); }
+    .roadmap-card.now .rm-time { color: var(--green); }
+    .roadmap-card.q2 { border-top: 2px solid var(--teal); }
+    .roadmap-card.q2 .rm-time { color: var(--teal); }
+    .roadmap-card.q3 { border-top: 2px solid var(--amber); }
+    .roadmap-card.q3 .rm-time { color: var(--amber); }
+    .roadmap-card.q4 { border-top: 2px solid var(--muted); }
+    .roadmap-card.q4 .rm-time { color: var(--muted-light); }
+    .roadmap-card h4 {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin-bottom: .5rem;
+      line-height: 1.3;
+    }
+    .roadmap-card p {
+      font-size: .82rem;
+      color: var(--muted-light);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════
+       USE CASES
+       ═══════════════════════════════════════ */
+    .usecases {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .uc-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 700px) { .uc-grid { grid-template-columns: 1fr; } }
+
+    .uc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .3s, transform .3s;
+    }
+    .uc-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-3px);
+    }
+    .uc-card-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.85) saturate(0.9);
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), filter 0.4s;
+    }
+    .uc-card:hover .uc-card-img {
+      transform: scale(1.04);
+      filter: brightness(0.95) saturate(1);
+    }
+    .uc-card-body {
+      padding: 1.75rem 1.75rem 2rem;
+    }
+    .uc-card .uc-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      background: var(--amber-glow);
+      border: 1px solid rgba(232,168,124,.15);
+    }
+    .uc-card .uc-icon svg { width: 22px; height: 22px; color: var(--amber); }
+    .uc-card h4 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin-bottom: .6rem;
+    }
+    .uc-card p {
+      font-size: .88rem;
+      color: var(--muted-light);
+      line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════
+       TRUST STRIP
+       ═══════════════════════════════════════ */
+    .trust {
+      position: relative;
+      z-index: 1;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .trust-label {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: .6rem;
+    }
+    .trust-chip {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted-light);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: .45rem .9rem;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .trust-chip::before {
+      content: '';
+      width: 4px; height: 4px;
+      background: var(--green);
+      border-radius: 50%;
+      opacity: .6;
+    }
+
+    /* ═══════════════════════════════════════
+       FINAL CTA / FORM
+       ═══════════════════════════════════════ */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+    /* Warm glow behind CTA */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(232,168,124,.04) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      color: var(--text-bright);
+      letter-spacing: -.02em;
+      margin-bottom: .75rem;
+    }
+    .cta-section h2 em { font-style: italic; color: var(--amber); }
+    .cta-section > p {
+      font-size: 1rem;
+      color: var(--muted-light);
+      margin-bottom: 3rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+
+    .demo-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem 2rem;
+      max-width: 460px;
+      margin: 0 auto;
+      text-align: left;
+      position: relative;
+      box-shadow: 0 16px 64px rgba(0,0,0,.4);
+    }
+    .demo-form::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber-dim), var(--amber), var(--amber-dim));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .demo-form h3 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin-bottom: .35rem;
+    }
+    .demo-form .form-sub {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .field { margin-bottom: 1.15rem; }
     .field label {
       display: block;
-      font-size: .75rem;
-      color: var(--muted);
-      letter-spacing: .05em;
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .1em;
       text-transform: uppercase;
+      color: var(--muted);
       margin-bottom: .4rem;
     }
     .field input,
@@ -274,702 +1057,495 @@
       background: var(--bg);
       border: 1px solid var(--border);
       color: var(--text);
+      font-family: var(--sans);
+      font-size: .92rem;
       padding: .75rem 1rem;
-      border-radius: 6px;
-      font-size: .95rem;
+      border-radius: 5px;
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .2s, box-shadow .2s;
       appearance: none;
       -webkit-appearance: none;
     }
     .field input:focus,
-    .field select:focus { border-color: var(--accent); }
+    .field select:focus {
+      border-color: var(--amber-dim);
+      box-shadow: 0 0 0 3px rgba(232,168,124,.08);
+    }
     .field input::placeholder { color: var(--muted); }
     .field select option { background: var(--surface2); }
-    .btn-demo {
+    /* Custom select arrow */
+    .field .select-wrap {
+      position: relative;
+    }
+    .field .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: .8rem;
+    }
+
+    .btn-submit {
       width: 100%;
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      color: #fff;
+      font-family: var(--sans);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--amber);
       border: none;
       padding: .9rem;
-      border-radius: 6px;
-      font-size: .95rem;
-      font-weight: 700;
+      border-radius: 5px;
       cursor: pointer;
       letter-spacing: .02em;
-      transition: opacity .2s, transform .15s;
-      margin-top: .5rem;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      margin-top: .25rem;
     }
-    .btn-demo:hover { opacity: .9; transform: translateY(-1px); }
-    .form-privacy {
+    .btn-submit:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(232,168,124,.25);
+    }
+
+    .form-note {
+      font-family: var(--sans);
       font-size: .72rem;
       color: var(--muted);
       text-align: center;
-      margin-top: .75rem;
+      margin-top: .85rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: .3rem;
+      gap: .35rem;
     }
+    .form-note svg { width: 12px; height: 12px; color: var(--muted); }
 
-    /* ── Problem Section ── */
-    .problem {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 5rem auto;
-      padding: 0 2rem;
-    }
-    .problem h2 {
-      font-size: 1.7rem;
-      font-weight: 700;
-      margin-bottom: 2.5rem;
-      text-align: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      letter-spacing: -.02em;
-    }
-    .compare-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
-    .compare-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-    }
-    .compare-card.bad { border-top: 2px solid var(--red); }
-    .compare-card.good { border-top: 2px solid var(--green); }
-    .compare-card h4 {
-      font-size: .8rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-    .compare-card.bad h4 { color: var(--red); }
-    .compare-card.good h4 { color: var(--green); }
-    .compare-list { list-style: none; }
-    .compare-list li {
-      font-size: .88rem;
-      color: var(--muted);
-      padding: .45rem 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-start;
-      gap: .6rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .compare-list li:last-child { border-bottom: none; }
-    .compare-list li .ico { flex-shrink: 0; }
-
-    /* ── How It Works ── */
-    .how {
-      position: relative;
-      z-index: 1;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 4rem 2rem;
-      margin: 4rem 0;
-    }
-    .how-inner { max-width: 900px; margin: 0 auto; }
-    .how h2 {
-      text-align: center;
-      font-size: 1.7rem;
-      font-weight: 700;
-      margin-bottom: 3rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      letter-spacing: -.02em;
-    }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-    }
-    .step { text-align: center; }
-    .step-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #fff;
-      font-weight: 800;
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-    }
-    .step h4 {
-      font-weight: 700;
-      margin-bottom: .5rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .step p {
-      font-size: .85rem;
-      color: var(--muted);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    /* ── Signals ── */
-    .signals {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 4rem auto;
-      padding: 0 2rem;
-    }
-    .signals h2 {
-      text-align: center;
-      font-size: 1.7rem;
-      font-weight: 700;
-      margin-bottom: 2.5rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      letter-spacing: -.02em;
-    }
-    .signals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 1rem;
-    }
-    .signal-chip {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1rem 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      font-size: .82rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .signal-chip .sig-icon { flex-shrink: 0; display: flex; align-items: center; }
-    .signal-chip .sig-text { color: var(--muted); }
-
-    /* ── Use Cases ── */
-    .usecases {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto 5rem;
-      padding: 0 2rem;
-    }
-    .usecases h2 {
-      text-align: center;
-      font-size: 1.7rem;
-      font-weight: 700;
-      margin-bottom: 2.5rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      letter-spacing: -.02em;
-    }
-    .uc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-    }
-    .uc-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-    }
-    .uc-card .uc-icon { margin-bottom: .75rem; }
-    .uc-card h4 {
-      font-weight: 700;
-      margin-bottom: .4rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: var(--accent);
-    }
-    .uc-card p {
-      font-size: .85rem;
-      color: var(--muted);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    /* ── Final CTA ── */
-    .final-cta {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 0 2rem 6rem;
-    }
-    .final-cta h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      letter-spacing: -.02em;
-    }
-    .final-cta p {
-      color: var(--muted);
-      margin-bottom: 2rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
+    /* ═══════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════ */
     footer {
       position: relative;
       z-index: 1;
       border-top: 1px solid var(--border);
+      padding: 2rem 2rem;
       text-align: center;
-      padding: 1.5rem;
-      color: var(--muted);
-      font-size: .78rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-
-    /* ── Hero City Background Image ── */
-    .hero-city-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .hero-city-bg img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.09;
-      display: block;
-    }
-    .hero { overflow: hidden; }
-
-    /* ── Use Case Card Images ── */
-    .uc-card-img {
-      display: block;
-      width: calc(100% + 3rem);
-      height: 120px;
-      object-fit: cover;
-      border-radius: var(--radius) var(--radius) 0 0;
-      margin: -1.5rem -1.5rem 1rem -1.5rem;
-    }
-
-    /* ── Data Credibility / Trust Strip ── */
-    .trust-strip {
-      position: relative;
-      z-index: 1;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      margin: 0;
-    }
-    .trust-strip-label {
-      font-size: .68rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      margin-bottom: 1.25rem;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .trust-badges {
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
       align-items: center;
-      gap: .85rem;
+      justify-content: space-between;
     }
-    .trust-badge {
-      font-size: .62rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
+    @media (max-width: 600px) {
+      .footer-inner { flex-direction: column; gap: .75rem; }
+    }
+    .footer-left {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--muted-light);
+    }
+    .footer-left em { color: var(--amber); font-style: italic; }
+    .footer-right {
+      font-size: .75rem;
       color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: .5rem 1rem;
-      background: var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
     }
-    .trust-badge-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--green);
-      opacity: .7;
-    }
-
-    /* ── NYC Street Photo Divider ── */
-    .nyc-divider {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-height: 250px;
-      overflow: hidden;
-    }
-    .nyc-divider img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      display: block;
-      opacity: 0.55;
-    }
-    .nyc-divider::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 70px;
-      background: linear-gradient(to bottom, var(--bg), transparent);
-      z-index: 1;
-    }
-    .nyc-divider::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 70px;
-      background: linear-gradient(to top, var(--bg), transparent);
-      z-index: 1;
-    }
-
-    /* ── Roadmap Dashboard Visual ── */
-    .roadmap-visual-wrap {
-      margin-top: 2rem;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 32px rgba(0,0,0,.45);
-      max-width: 460px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .roadmap-visual-wrap img {
-      width: 100%;
-      display: block;
-      object-fit: cover;
-    }
+    .footer-right a { color: var(--muted-light); }
   </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
+<div class="topo-bg" aria-hidden="true"></div>
 
-<!-- Nav -->
+<!-- ─── NAVIGATION ─── -->
 <nav>
-  <div class="logo">Local<span>Score</span></div>
+  <div class="logo">Local<em>Score</em></div>
   <div class="nav-right">
-    <span class="nav-badge">Private Beta</span>
+    <span class="nav-tag">Private Beta</span>
+    <a href="#demo" class="nav-cta">Request Demo</a>
   </div>
 </nav>
 
-<!-- Hero -->
+<!-- ─── HERO ─── -->
 <section class="hero">
-  <!-- Subtle aerial city background -->
-  <div class="hero-city-bg" aria-hidden="true">
-    <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1400&q=80&auto=format"
-         alt="" loading="lazy" />
+  <div class="hero-bg-img"></div>
+  <div class="hero-badge">
+    <span class="pulse-dot"></span>
+    API · Now in Private Beta
   </div>
-  <div class="hero-text">
-    <div class="hero-pill">
-      <div class="pulse"></div>
-      API · Now in Private Beta
-    </div>
-    <h1>Location Risk Intelligence<br/><span class="highlight">Powered by Data Correlation</span></h1>
-    <p class="subheadline">We combine government datasets with municipal records to find predictive correlations most APIs miss. AI-powered scoring that goes beyond raw crime reports — built for proptech, real estate platforms, and insurance underwriters.</p>
-    <div class="target-badges">
-      <span class="badge badge-blue"><i data-lucide="building-2" style="width:14px;height:14px;"></i> PropTech Platforms</span>
-      <span class="badge badge-teal"><i data-lucide="home" style="width:14px;height:14px;"></i> Real Estate APIs</span>
-      <span class="badge badge-green"><i data-lucide="clipboard-list" style="width:14px;height:14px;"></i> Insurance Underwriting</span>
-    </div>
+  <h1>Location Risk Intelligence,<br><em>Powered by Correlation</em></h1>
+  <p class="hero-sub">We correlate government datasets with municipal records to find predictive patterns most APIs miss. AI-powered scoring that goes beyond raw crime reports.</p>
+  <div class="hero-audiences">
+    <span class="audience-tag t1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      PropTech Platforms
+    </span>
+    <span class="audience-tag t2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Real Estate APIs
+    </span>
+    <span class="audience-tag t3">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      Insurance Underwriting
+    </span>
   </div>
-
-  <!-- Heatmap Mock -->
-  <div class="heatmap-panel">
-    <div class="heatmap-header">
-      <span>RISK HEATMAP</span>
-      <span>LIVE DEMO</span>
-    </div>
-    <div class="heatmap-grid" id="heatmap"></div>
-    <div class="score-bar">
-      <div>
-        <div class="label">COMPOSITE RISK SCORE</div>
-        <div class="score-track"><div class="score-fill"></div></div>
-      </div>
-      <div class="score-val">3.2 / 10</div>
-    </div>
-    <div class="data-rows">
-      <div class="data-row">
-        <span class="key">Data Correlation</span>
-        <span class="val green">Strong ↑</span>
-      </div>
-      <div class="data-row">
-        <span class="key">Vacancy Signal</span>
-        <span class="val orange">Moderate</span>
-      </div>
-      <div class="data-row">
-        <span class="key">Income Distribution</span>
-        <span class="val green">Stable ↑</span>
-      </div>
-      <div class="data-row">
-        <span class="key">Population Density</span>
-        <span class="val green">High ↑</span>
-      </div>
-      <div class="data-row">
-        <span class="key">Data Sources</span>
-        <span class="val" style="color:var(--accent)">Gov + Municipal + Geo</span>
-      </div>
-    </div>
-  </div>
+  <a href="#demo" class="hero-cta">Request a Live Demo →</a>
 </section>
 
-<!-- Problem -->
-<section class="problem">
-  <h2>Why existing crime data APIs fall short</h2>
-  <div class="compare-grid">
-    <div class="compare-card bad">
-      <h4><i data-lucide="x-circle" style="width:16px;height:16px;"></i> CrimeoMeter, CrimeGrade, etc.</h4>
-      <ul class="compare-list">
-        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Just repackages police department reports</li>
-        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> 40%+ of crimes never get reported</li>
-        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Inconsistent across jurisdictions</li>
-        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Biased by enforcement patterns</li>
-        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> Stale data — lags reality by 6–18 months</li>
-        <li><span class="ico"><i data-lucide="x-circle" style="width:16px;height:16px;color:var(--red);"></i></span> No predictive intelligence, just historical counts</li>
-      </ul>
-    </div>
-    <div class="compare-card good">
-      <h4><i data-lucide="check-circle" style="width:16px;height:16px;"></i> LocalScore Approach</h4>
-      <ul class="compare-list">
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Correlates government data with incident patterns via AI</li>
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Predicts risk where reports don't exist</li>
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Consistent, API-normalized scores nationwide</li>
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Statistically removes enforcement bias</li>
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Expanding to live data sources (Citizen, OSM)</li>
-        <li><span class="ico"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--green);"></i></span> Predictive, not just descriptive</li>
-      </ul>
-    </div>
-  </div>
-</section>
+<!-- ─── RISK VISUALIZATION ─── -->
+<div class="rule-ornament container"><span>Live Risk Intelligence</span></div>
 
-<!-- Data Pipeline Visual -->
-<section class="how" style="background:var(--bg);border:none;padding:3rem 2rem;">
-  <div class="how-inner">
-    <h2>Our data pipeline</h2>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2rem;">
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1rem;text-align:center;">
-        <div style="background:rgba(0,102,255,.12);border:1px solid rgba(0,102,255,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="landmark" style="width:32px;height:32px;color:#6699ff;"></i></div>
-          <div style="font-size:.75rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Source</div>
-          <div style="font-size:.9rem;color:var(--text);font-weight:600;">Government Data</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Federal demographic, economic, and housing datasets</div>
+<section class="viz-section reveal">
+  <div class="viz-panel">
+    <!-- Heatmap + Score -->
+    <div class="viz-card">
+      <div class="viz-label">
+        <span>Risk Heatmap — NYC Sample</span>
+        <span class="live-dot">Live</span>
+      </div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="score-row">
+        <div style="flex:1;">
+          <div class="score-label">Composite Risk Score</div>
+          <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
         </div>
-        <div style="font-size:1.5rem;color:var(--muted);">→</div>
-        <div style="background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="siren" style="width:32px;height:32px;color:var(--orange);"></i></div>
-          <div style="font-size:.75rem;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Source</div>
-          <div style="font-size:.9rem;color:var(--text);font-weight:600;">Municipal Incident Data</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Geo-tagged incident records from public safety agencies</div>
-        </div>
-        <div style="font-size:1.5rem;color:var(--muted);">→</div>
-        <div style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="cpu" style="width:32px;height:32px;color:var(--accent);"></i></div>
-          <div style="font-size:.75rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">AI Engine</div>
-          <div style="font-size:.9rem;color:var(--text);font-weight:600;">Correlation Model</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">Statistical analysis finds predictive patterns between datasets</div>
-        </div>
-        <div style="font-size:1.5rem;color:var(--muted);">→</div>
-        <div style="background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);border-radius:8px;padding:1.2rem 1.5rem;min-width:140px;">
-          <div style="margin-bottom:.4rem;display:flex;justify-content:center;"><i data-lucide="bar-chart-3" style="width:32px;height:32px;color:var(--green);"></i></div>
-          <div style="font-size:.75rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Output</div>
-          <div style="font-size:.9rem;color:var(--text);font-weight:600;">Risk Score API</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">0-10 score per location with confidence intervals</div>
-        </div>
+        <div class="score-value">3.2 <span style="font-size:.7rem;color:var(--muted);font-weight:400;">/ 10</span></div>
+      </div>
+      <div class="data-rows">
+        <div class="data-row"><span class="dk">Data Correlation</span><span class="dv green">Strong ↑</span></div>
+        <div class="data-row"><span class="dk">Vacancy Signal</span><span class="dv amber">Moderate</span></div>
+        <div class="data-row"><span class="dk">Income Distribution</span><span class="dv green">Stable ↑</span></div>
+        <div class="data-row"><span class="dk">Population Density</span><span class="dv green">High ↑</span></div>
+        <div class="data-row"><span class="dk">Data Sources</span><span class="dv teal">Gov + Municipal + Geo</span></div>
       </div>
     </div>
 
-    <!-- Mock correlation chart -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;">
-        <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Correlation Accuracy — Key Signals</div>
-        <div style="display:flex;flex-direction:column;gap:.6rem;">
-          <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Economic Index</span>
-            <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:87%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;"></div></div>
-            <span style="font-size:.8rem;color:var(--green);font-weight:700;width:40px;">87%</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Vacancy Signal</span>
-            <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:82%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;"></div></div>
-            <span style="font-size:.8rem;color:var(--green);font-weight:700;width:40px;">82%</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Social Factor</span>
-            <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:79%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:4px;"></div></div>
-            <span style="font-size:.8rem;color:var(--green);font-weight:700;width:40px;">79%</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Density Score</span>
-            <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:74%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;"></div></div>
-            <span style="font-size:.8rem;color:var(--accent);font-weight:700;width:40px;">74%</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem;">
-            <span style="font-size:.8rem;color:var(--muted);width:120px;">Labor Signal</span>
-            <div style="flex:1;background:var(--bg);border-radius:4px;height:20px;overflow:hidden;"><div style="height:100%;width:71%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;"></div></div>
-            <span style="font-size:.8rem;color:var(--accent);font-weight:700;width:40px;">71%</span>
-          </div>
-        </div>
+    <!-- API Response -->
+    <div class="viz-card">
+      <div class="viz-label">
+        <span>Sample API Response</span>
+        <span style="font-family:var(--mono);font-size:.58rem;color:var(--amber);letter-spacing:.06em;">GET /v1/score</span>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;">
-        <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Mock API Response</div>
-        <pre style="background:var(--bg);border-radius:6px;padding:1rem;font-size:.72rem;color:var(--accent);overflow-x:auto;line-height:1.7;font-family:'SF Mono','Fira Code','Consolas',monospace;">{
-  "location": "40.7128, -74.0060",
-  "risk_score": 3.2,
-  "confidence": 0.91,
-  "signals": {
-    "data_correlation": 0.87,
-    "vacancy_signal": 0.34,
-    "economic_deviation": -0.12,
-    "social_factor": 0.79,
-    "density_index": 0.74
+      <div class="api-pre">{
+  <span class="k">"location"</span>: <span class="v-str">"40.7128, -74.0060"</span>,
+  <span class="k">"risk_score"</span>: <span class="v-num">3.2</span>,
+  <span class="k">"confidence"</span>: <span class="v-num">0.91</span>,
+  <span class="k">"signals"</span>: {
+    <span class="k">"data_correlation"</span>: <span class="v-num">0.87</span>,
+    <span class="k">"vacancy_signal"</span>: <span class="v-num">0.34</span>,
+    <span class="k">"economic_deviation"</span>: <span class="v-num">-0.12</span>,
+    <span class="k">"social_factor"</span>: <span class="v-num">0.79</span>,
+    <span class="k">"density_index"</span>: <span class="v-num">0.74</span>
   },
-  "prediction_window": "90_days",
-  "data_freshness": "2026-02-15"
-}</pre>
+  <span class="k">"prediction_window"</span>: <span class="v-str">"90_days"</span>,
+  <span class="k">"data_freshness"</span>: <span class="v-str">"2026-02-15"</span>
+}</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── THE PROBLEM ─── -->
+<section class="problem">
+  <div class="section-header reveal">
+    <p class="eyebrow">The Problem</p>
+    <h2>Why existing crime data APIs <em>fall short</em></h2>
+  </div>
+  <div class="compare-grid reveal">
+    <div class="compare-card negative">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        CrimeoMeter, CrimeGrade, etc.
+      </h3>
+      <ul class="compare-list">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Just repackages police department reports
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          40%+ of crimes never get reported
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Inconsistent across jurisdictions
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Biased by enforcement patterns
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Stale data — lags reality by 6–18 months
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          No predictive intelligence, just historical counts
+        </li>
+      </ul>
+    </div>
+    <div class="compare-card positive">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 10 11 15 8 12"/></svg>
+        LocalScore Approach
+      </h3>
+      <ul class="compare-list">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Correlates government data with incident patterns via AI
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Predicts risk where reports don't exist
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Consistent, API-normalized scores nationwide
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Statistically removes enforcement bias
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Expanding to live data sources (Citizen, OSM)
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Predictive, not just descriptive
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DATA PIPELINE ─── -->
+<section class="pipeline">
+  <div class="section-header reveal">
+    <p class="eyebrow">How It Works</p>
+    <h2>Our <em>data pipeline</em></h2>
+  </div>
+  <div class="pipeline-flow reveal">
+    <div class="pipe-step c1">
+      <div class="pipe-icon c1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+      </div>
+      <p class="pipe-eyebrow">Source</p>
+      <h4>Government Data</h4>
+      <p>Federal demographic, economic, and housing datasets at the block level.</p>
+    </div>
+    <div class="pipe-step c2">
+      <div class="pipe-icon c2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <p class="pipe-eyebrow">Source</p>
+      <h4>Municipal Incident Data</h4>
+      <p>Geo-tagged incident records from public safety agencies.</p>
+    </div>
+    <div class="pipe-step c3">
+      <div class="pipe-icon c3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      </div>
+      <p class="pipe-eyebrow">AI Engine</p>
+      <h4>Correlation Model</h4>
+      <p>Statistical analysis finds predictive patterns between datasets.</p>
+    </div>
+    <div class="pipe-step c4">
+      <div class="pipe-icon c4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <p class="pipe-eyebrow">Output</p>
+      <h4>Risk Score API</h4>
+      <p>0–10 score per location with confidence intervals.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CORRELATION ACCURACY ─── -->
+<section class="corr-section">
+  <div class="section-header reveal">
+    <p class="eyebrow">Model Performance</p>
+    <h2>Correlation accuracy across <em>key signals</em></h2>
+  </div>
+  <div class="corr-grid reveal">
+    <div class="corr-card">
+      <p class="corr-title">Signal Correlation Strength</p>
+      <div class="bar-row">
+        <span class="bar-label">Economic Index</span>
+        <div class="bar-track"><div class="bar-fill high" data-w="87"></div></div>
+        <span class="bar-pct high">87%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Vacancy Signal</span>
+        <div class="bar-track"><div class="bar-fill high" data-w="82"></div></div>
+        <span class="bar-pct high">82%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Social Factor</span>
+        <div class="bar-track"><div class="bar-fill high" data-w="79"></div></div>
+        <span class="bar-pct high">79%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Density Score</span>
+        <div class="bar-track"><div class="bar-fill" data-w="74"></div></div>
+        <span class="bar-pct">74%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Labor Signal</span>
+        <div class="bar-track"><div class="bar-fill" data-w="71"></div></div>
+        <span class="bar-pct">71%</span>
+      </div>
+    </div>
+    <div class="corr-card">
+      <p class="corr-title">How It Works — 4 Steps</p>
+      <div style="display:flex;flex-direction:column;gap:1.1rem;">
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <span style="font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--amber);min-width:22px;">01</span>
+          <div>
+            <p style="font-size:.88rem;font-weight:500;color:var(--text-bright);margin-bottom:.15rem;">Ingest Government Data</p>
+            <p style="font-size:.78rem;color:var(--muted-light);line-height:1.55;">Federal, state, and municipal datasets — demographic, economic, housing, and public safety records — at the block level.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <span style="font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--amber);min-width:22px;">02</span>
+          <div>
+            <p style="font-size:.88rem;font-weight:500;color:var(--text-bright);margin-bottom:.15rem;">AI Correlation Engine</p>
+            <p style="font-size:.78rem;color:var(--muted-light);line-height:1.55;">Find statistical correlations between demographic variables and incident patterns — which factors actually predict risk.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <span style="font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--amber);min-width:22px;">03</span>
+          <div>
+            <p style="font-size:.88rem;font-weight:500;color:var(--text-bright);margin-bottom:.15rem;">Score + Predict</p>
+            <p style="font-size:.78rem;color:var(--muted-light);line-height:1.55;">Every location gets a 0–10 risk score. The model predicts what police data can't tell you.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <span style="font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--amber);min-width:22px;">04</span>
+          <div>
+            <p style="font-size:.88rem;font-weight:500;color:var(--text-bright);margin-bottom:.15rem;">API Delivery</p>
+            <p style="font-size:.78rem;color:var(--muted-light);line-height:1.55;">REST API, bulk CSV, or webhook. Plug into your existing platform in under an hour.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Data Credibility Strip -->
-<div class="trust-strip">
-  <p class="trust-strip-label">Powered by authoritative government data sources</p>
-  <div class="trust-badges">
-    <span class="trust-badge"><span class="trust-badge-dot"></span>Federal Government Data</span>
-    <span class="trust-badge"><span class="trust-badge-dot"></span>Municipal Open Data</span>
-    <span class="trust-badge"><span class="trust-badge-dot"></span>Demographic Datasets</span>
-    <span class="trust-badge"><span class="trust-badge-dot"></span>Public Safety Records</span>
-    <span class="trust-badge"><span class="trust-badge-dot"></span>Geospatial Intelligence</span>
+<!-- ─── DATA SOURCES ─── -->
+<section class="sources">
+  <div class="section-header reveal">
+    <p class="eyebrow">Data Sources</p>
+    <h2>Signals powering <em>our model</em></h2>
   </div>
-</div>
-
-<!-- How It Works -->
-<section class="how">
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h4>Ingest Government Data</h4>
-        <p>We ingest federal, state, and municipal datasets — demographic, economic, housing, and public safety records — at the block level.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h4>AI Correlation Engine</h4>
-        <p>Our model finds statistical correlations between demographic variables and incident patterns — identifying which factors actually predict risk.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h4>Score + Predict</h4>
-        <p>Every location gets a 0–10 risk score from our correlation model — no crime report needed. The model predicts what police data can't tell you.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <h4>API Delivery</h4>
-        <p>REST API, bulk CSV, or webhook. Plug into your existing platform in under an hour.</p>
-      </div>
-    </div>
+  <p class="sources-note reveal">Currently live in <strong>NYC</strong>. Expanding nationwide.</p>
+  <div class="source-grid reveal">
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Government Data</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Municipal Incidents</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Income &amp; Poverty</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Social Factors</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Housing &amp; Vacancy</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Population Density</span></div>
+    <div class="source-chip"><span class="status-dot next"></span><span class="source-status next">Next</span><span class="source-name">OpenStreetMap</span></div>
+    <div class="source-chip"><span class="status-dot next"></span><span class="source-status next">Next</span><span class="source-name">Business Density</span></div>
+    <div class="source-chip"><span class="status-dot next"></span><span class="source-status next">Next</span><span class="source-name">Transit Access</span></div>
+    <div class="source-chip"><span class="status-dot planned"></span><span class="source-status planned">Planned</span><span class="source-name">Citizen App (live)</span></div>
+    <div class="source-chip"><span class="status-dot planned"></span><span class="source-status planned">Planned</span><span class="source-name">Street Imagery</span></div>
+    <div class="source-chip"><span class="status-dot planned"></span><span class="source-status planned">Planned</span><span class="source-name">Satellite Data</span></div>
   </div>
 </section>
 
-<!-- NYC Street Divider -->
-<div class="nyc-divider">
-  <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200&q=80&auto=format"
-       alt="New York City street view" loading="lazy" />
-</div>
-
-<!-- Signals → now "Data Sources" -->
-<section class="signals">
-  <h2>Data sources powering our model</h2>
-  <p style="text-align:center;color:var(--muted);margin-bottom:2rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:.9rem;">Currently live in NYC. Expanding nationwide.</p>
-  <div class="signals-grid">
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="landmark" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Government Data</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="siren" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Municipal Incident Data</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="dollar-sign" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Income &amp; Poverty</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="graduation-cap" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Social Factors</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="home" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Housing &amp; Vacancy</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,255,136,.25);"><span class="sig-icon"><i data-lucide="users" style="width:20px;height:20px;color:var(--green);"></i></span><span class="sig-text"><strong style="color:var(--green);">LIVE</strong> — Population Density</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="map" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — OpenStreetMap</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="store" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — Business Density</span></div>
-    <div class="signal-chip" style="border-color:rgba(0,212,255,.25);"><span class="sig-icon"><i data-lucide="bus" style="width:20px;height:20px;color:var(--accent);"></i></span><span class="sig-text"><strong style="color:var(--accent);">NEXT</strong> — Transit Access</span></div>
-    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon"><i data-lucide="smartphone" style="width:20px;height:20px;color:var(--orange);"></i></span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Citizen App (live)</span></div>
-    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon"><i data-lucide="camera" style="width:20px;height:20px;color:var(--orange);"></i></span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Street Imagery</span></div>
-    <div class="signal-chip" style="border-color:rgba(255,107,53,.25);"><span class="sig-icon"><i data-lucide="satellite-dish" style="width:20px;height:20px;color:var(--orange);"></i></span><span class="sig-text"><strong style="color:var(--orange);">PLANNED</strong> — Satellite Data</span></div>
+<!-- ─── ROADMAP ─── -->
+<section class="roadmap">
+  <div class="section-header reveal">
+    <p class="eyebrow">Roadmap</p>
+    <h2>Where we're <em>headed</em></h2>
   </div>
-</section>
-
-<!-- Roadmap -->
-<section class="usecases" style="margin-top:4rem;">
-  <h2>Product roadmap</h2>
-  <div class="uc-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
-    <div class="uc-card" style="border-top:2px solid var(--green);">
-      <div style="font-size:.7rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;"><i data-lucide="check" style="width:13px;height:13px;"></i> Now</div>
-      <h4 style="color:var(--green);">NYC Census + Crime</h4>
+  <div class="roadmap-grid reveal">
+    <div class="roadmap-card now">
+      <p class="rm-time">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Now
+      </p>
+      <h4>NYC Census + Crime</h4>
       <p>Statistical correlation model trained on government demographic and municipal incident data. Block-level scoring.</p>
     </div>
-    <div class="uc-card" style="border-top:2px solid var(--accent);">
-      <div style="font-size:.7rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">→ Q2 2026</div>
+    <div class="roadmap-card q2">
+      <p class="rm-time">→ Q2 2026</p>
       <h4>OpenStreetMap Integration</h4>
-      <p>Add physical environment data — building types, road networks, points of interest, land use — for richer predictions.</p>
+      <p>Physical environment data — building types, road networks, points of interest, land use — for richer predictions.</p>
     </div>
-    <div class="uc-card" style="border-top:2px solid var(--orange);">
-      <div style="font-size:.7rem;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">→ Q3 2026</div>
+    <div class="roadmap-card q3">
+      <p class="rm-time">→ Q3 2026</p>
       <h4>Live Data Feeds</h4>
-      <p>Real-time signals from Citizen app incident reports, 311 complaints, and social media for dynamic risk scoring.</p>
+      <p>Real-time signals from Citizen app, 311 complaints, and social media for dynamic risk scoring.</p>
     </div>
-    <div class="uc-card" style="border-top:2px solid var(--accent2);">
-      <div style="font-size:.7rem;color:var(--accent2);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">→ Q4 2026</div>
+    <div class="roadmap-card q4">
+      <p class="rm-time">→ Q4 2026</p>
       <h4>Nationwide Coverage</h4>
       <p>Expand beyond NYC to all major US metros. Census data is nationwide — crime data partnerships in progress.</p>
     </div>
   </div>
-  <!-- Roadmap data visualization -->
-  <div class="roadmap-visual-wrap">
-    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&auto=format"
-         alt="Data analytics dashboard showing location risk visualization" loading="lazy" />
-  </div>
 </section>
 
+<!-- ─── USE CASES ─── -->
 <section class="usecases">
-  <h2>Built for your use case</h2>
-  <div class="uc-grid">
+  <div class="section-header reveal">
+    <p class="eyebrow">Use Cases</p>
+    <h2>Built for <em>your platform</em></h2>
+  </div>
+  <div class="uc-grid reveal">
     <div class="uc-card">
-      <img class="uc-card-img"
-           src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80&auto=format"
-           alt="Aerial view of buildings for real estate platforms" loading="lazy" />
-      <div class="uc-icon"><i data-lucide="home" style="width:28px;height:28px;color:var(--accent);"></i></div>
+      <img class="uc-card-img" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80&auto=format" alt="Real estate" loading="lazy" />
+      <div class="uc-card-body">
+      <div class="uc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
       <h4>Real Estate Platforms</h4>
       <p>Enrich listings with neighborhood risk context. Give buyers better data without the Fair Housing liability of crime labels.</p>
+      </div>
     </div>
     <div class="uc-card">
-      <img class="uc-card-img"
-           src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80&auto=format"
-           alt="Glass office buildings representing PropTech companies" loading="lazy" />
-      <div class="uc-icon"><i data-lucide="hammer" style="width:28px;height:28px;color:var(--accent);"></i></div>
+      <img class="uc-card-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80&auto=format" alt="Commercial buildings" loading="lazy" />
+      <div class="uc-card-body">
+      <div class="uc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </div>
       <h4>PropTech Companies</h4>
       <p>Power investment scoring, portfolio risk analysis, and automated underwriting with signals that actually predict outcomes.</p>
+      </div>
     </div>
     <div class="uc-card">
-      <img class="uc-card-img"
-           src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80&auto=format"
-           alt="Insurance paperwork and desk for underwriting use case" loading="lazy" />
-      <div class="uc-icon"><i data-lucide="clipboard-list" style="width:28px;height:28px;color:var(--accent);"></i></div>
+      <img class="uc-card-img" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80&auto=format" alt="Insurance documents" loading="lazy" />
+      <div class="uc-card-body">
+      <div class="uc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      </div>
       <h4>Insurance Underwriters</h4>
       <p>Replace unreliable crime indexes with a consistent, auditable, and legally defensible risk signal for property underwriting.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Final CTA -->
-<section class="final-cta">
-  <h2>Ready to see it on your data?</h2>
-  <p>We're onboarding a limited number of design partners for private beta. Request a live demo with your actual addresses.</p>
-  <div class="demo-form" style="max-width:440px;margin:0 auto;">
+<!-- ─── TRUST STRIP ─── -->
+<div class="trust reveal">
+  <p class="trust-label">Powered by Authoritative Government Data Sources</p>
+  <div class="trust-row">
+    <span class="trust-chip">Federal Government Data</span>
+    <span class="trust-chip">Municipal Open Data</span>
+    <span class="trust-chip">Demographic Datasets</span>
+    <span class="trust-chip">Public Safety Records</span>
+    <span class="trust-chip">Geospatial Intelligence</span>
+  </div>
+</div>
+
+<!-- ─── FINAL CTA + FORM ─── -->
+<section class="cta-section" id="demo">
+  <h2 class="reveal">Ready to see it on <em>your data?</em></h2>
+  <p class="reveal">We're onboarding a limited number of design partners for private beta. Request a live demo with your actual addresses.</p>
+  <div class="demo-form reveal">
     <h3>Request a Demo</h3>
     <p class="form-sub">We'll walk you through a live API call on your dataset.</p>
     <form action="https://formsubmit.co/oopslabai@gmail.com" method="POST">
@@ -977,67 +1553,107 @@
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_next" value="https://oops-lab-ai.github.io/localscore/thanks.html">
       <div class="field">
-        <label>Company Name</label>
-        <input type="text" name="company" placeholder="Acme PropTech Inc." required />
+        <label for="company">Company Name</label>
+        <input type="text" id="company" name="company" placeholder="Acme PropTech Inc." required />
       </div>
       <div class="field">
-        <label>Work Email</label>
-        <input type="email" name="email" placeholder="you@company.com" required />
+        <label for="email">Work Email</label>
+        <input type="email" id="email" name="email" placeholder="you@company.com" required />
       </div>
       <div class="field">
-        <label>Use Case</label>
-        <select name="usecase" required>
-          <option value="" disabled selected>Select your use case...</option>
-          <option value="listing-enrichment">Listing Enrichment / MLS</option>
-          <option value="investment-scoring">Investment Scoring</option>
-          <option value="insurance-underwriting">Insurance Underwriting</option>
-          <option value="portfolio-risk">Portfolio Risk Analysis</option>
-          <option value="mortgage-lending">Mortgage / Lending</option>
-          <option value="other">Other</option>
-        </select>
+        <label for="usecase">Use Case</label>
+        <div class="select-wrap">
+          <select id="usecase" name="usecase" required>
+            <option value="" disabled selected>Select your use case…</option>
+            <option value="listing-enrichment">Listing Enrichment / MLS</option>
+            <option value="investment-scoring">Investment Scoring</option>
+            <option value="insurance-underwriting">Insurance Underwriting</option>
+            <option value="portfolio-risk">Portfolio Risk Analysis</option>
+            <option value="mortgage-lending">Mortgage / Lending</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
       </div>
-      <button type="submit" class="btn-demo">Request a Demo →</button>
+      <button type="submit" class="btn-submit">Request a Demo →</button>
     </form>
-    <p class="form-privacy"><i data-lucide="lock" style="width:12px;height:12px;"></i> No spam. Demo request only. We'll respond within 1 business day.</p>
+    <p class="form-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      No spam. Demo request only. We respond within 1 business day.
+    </p>
   </div>
 </section>
 
+<!-- ─── FOOTER ─── -->
 <footer>
-  <p>© 2026 LocalScore by OopsLab AI · <a href="mailto:oopslabai@gmail.com" style="color:var(--muted)">oopslabai@gmail.com</a> · Built for proptech teams who care about accuracy.</p>
+  <div class="footer-inner">
+    <div class="footer-left">Local<em>Score</em></div>
+    <div class="footer-right">
+      © 2026 LocalScore by OopsLab AI · <a href="mailto:oopslabai@gmail.com">oopslabai@gmail.com</a>
+    </div>
+  </div>
 </footer>
 
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════════ -->
 <script>
-// Generate heatmap
 (function() {
-  const grid = document.getElementById('heatmap');
-  const palette = [
-    '#00ff8820','#00ff8840','#00ff8860',  // green (low risk)
-    '#00d4ff20','#00d4ff40',               // blue (medium)
-    '#ff6b3530','#ff6b3550','#ff6b3570',  // orange (elevated)
-    '#ff335530','#ff335550',               // red (high)
-  ];
-  const weights = [15,12,10,8,8,7,7,6,4,3]; // bias toward green
-  const total = 18 * 12;
-  
-  for(let i = 0; i < total; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'heatmap-cell';
-    // Weighted random
-    const rand = Math.random() * 80;
-    let acc = 0, chosen = palette[0];
-    for(let j = 0; j < weights.length; j++) {
-      acc += weights[j];
-      if(rand < acc) { chosen = palette[j]; break; }
+  // ── Heatmap Generation ──
+  const heatmap = document.getElementById('heatmap');
+  if (heatmap) {
+    const total = 20 * 10;
+    const palette = [
+      'rgba(52,211,153,.12)', 'rgba(52,211,153,.22)', 'rgba(52,211,153,.35)',
+      'rgba(45,212,191,.15)', 'rgba(45,212,191,.28)',
+      'rgba(232,168,124,.15)', 'rgba(232,168,124,.28)', 'rgba(232,168,124,.4)',
+      'rgba(248,113,113,.15)', 'rgba(248,113,113,.3)',
+    ];
+    const weights = [16, 13, 10, 9, 8, 7, 6, 5, 3, 2];
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'hm-cell';
+      let rand = Math.random() * 79, acc = 0, chosen = palette[0];
+      for (let j = 0; j < weights.length; j++) {
+        acc += weights[j];
+        if (rand < acc) { chosen = palette[j]; break; }
+      }
+      if (Math.random() < 0.04) chosen = 'rgba(248,113,113,.35)';
+      cell.style.background = chosen;
+      heatmap.appendChild(cell);
     }
-    cell.style.background = chosen;
-    // Cluster effect: neighbors influence each other
-    if(Math.random() < 0.05) {
-      cell.style.background = '#ff335560';
-    }
-    grid.appendChild(cell);
   }
+
+  // ── Score Fill Animation ──
+  const scoreFill = document.getElementById('scoreFill');
+  if (scoreFill) {
+    setTimeout(() => { scoreFill.style.width = '32%'; }, 400);
+  }
+
+  // ── Correlation Bar Animation ──
+  const barFills = document.querySelectorAll('.bar-fill[data-w]');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.width = entry.target.dataset.w + '%';
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  barFills.forEach(b => { b.style.width = '0%'; barObserver.observe(b); });
+
+  // ── Scroll Reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Stagger children if multiple reveal elements appear together
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(r => revealObserver.observe(r));
 })();
 </script>
-<script>lucide.createIcons();</script>
 </body>
 </html>
