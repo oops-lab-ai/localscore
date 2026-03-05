@@ -1369,39 +1369,41 @@
 <!-- ─── CORRELATION ACCURACY ─── -->
 <section class="corr-section">
   <div class="section-header reveal">
-    <p class="eyebrow">Model Performance</p>
-    <h2>Validated against <em>held-out 2024 data</em></h2>
+    <p class="eyebrow">Model Quality</p>
+    <h2>A score you can <em>explain to anyone</em></h2>
   </div>
   <div class="corr-grid reveal">
     <div class="corr-card">
-      <p class="corr-title">Backtest Results — 2024 Held-Out Data</p>
-      <div class="data-rows" style="margin-bottom:1.5rem;">
-        <div class="data-row">
-          <span class="dk">Rank Correlation (ρ)</span>
-          <span class="dv green">0.9988</span>
+      <p class="corr-title">Why It Holds Up</p>
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:6px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <p style="font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:.3rem;">Tested on data it never saw</p>
+            <p style="font-size:.8rem;color:var(--muted-light);line-height:1.65;">Trained on three years of historical data, then validated on a full fourth year before we showed it to anyone. The risk rankings held.</p>
+          </div>
         </div>
-        <div class="data-row">
-          <span class="dk">Sign Stability</span>
-          <span class="dv green">100%</span>
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:6px;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div>
+            <p style="font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:.3rem;">Transparent inputs</p>
+            <p style="font-size:.8rem;color:var(--muted-light);line-height:1.65;">Every variable is a named, documented Census ACS field. No proprietary black-box data. You can explain every score to a compliance team.</p>
+          </div>
         </div>
-        <div class="data-row">
-          <span class="dk">Variables Tested</span>
-          <span class="dv teal">39 ACS variables</span>
-        </div>
-        <div class="data-row">
-          <span class="dk">Test Window</span>
-          <span class="dv teal">Full year 2024</span>
-        </div>
-        <div class="data-row">
-          <span class="dk">Training Data</span>
-          <span class="dv amber">2021 – 2023 NYPD</span>
-        </div>
-        <div class="data-row">
-          <span class="dk">Geography</span>
-          <span class="dv amber">NYC census block groups</span>
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:6px;background:rgba(232,168,124,.1);border:1px solid rgba(232,168,124,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8a87c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <p style="font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:.3rem;">Stable signal, not noise</p>
+            <p style="font-size:.8rem;color:var(--muted-light);line-height:1.65;">The structural factors that correlate with neighborhood risk don't flip year to year. The model captures durable signal — not short-term fluctuation.</p>
+          </div>
         </div>
       </div>
-      <p style="font-size:.75rem;color:var(--muted);line-height:1.6;">A rank correlation of 0.9988 means the model's risk ordering was nearly identical between the training period and 2024 data it never saw. 100% sign stability means every variable predicted in the same direction — no surprises in production.</p>
     </div>
     <div class="corr-card">
       <p class="corr-title">How It Works — 4 Steps</p>
@@ -1479,18 +1481,18 @@
     </div>
     <div class="roadmap-card q2">
       <p class="rm-time">→ Q2 2026</p>
-      <h4>OpenStreetMap Integration</h4>
-      <p>Physical environment data — building types, road networks, points of interest, land use — for richer predictions.</p>
+      <h4>Nationwide Coverage</h4>
+      <p>Census ACS 5-year estimates cover all 220,000+ U.S. census block groups. Correlation weights trained on NYC apply nationally from day one.</p>
     </div>
     <div class="roadmap-card q3">
       <p class="rm-time">→ Q3 2026</p>
-      <h4>Live Data Feeds</h4>
-      <p>Real-time signals from Citizen app, 311 complaints, and social media for dynamic risk scoring.</p>
+      <h4>Self-Serve Access</h4>
+      <p>API key management, usage dashboard, and tiered pricing. Sign up, get a key, start scoring in under an hour.</p>
     </div>
     <div class="roadmap-card q4">
       <p class="rm-time">→ Q4 2026</p>
-      <h4>Nationwide Coverage</h4>
-      <p>ACS 5-year estimates cover all 220,000+ U.S. census block groups. Correlation weights trained on NYC apply nationwide — no additional crime data partnerships required.</p>
+      <h4>Live Signals</h4>
+      <p>Layer in real-time data — 311 complaints, Citizen app, permit activity — for dynamic scoring that reflects what's happening now, not last year.</p>
     </div>
   </div>
 </section>
