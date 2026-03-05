@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LocalScore – Location Risk Intelligence Powered by Data Correlation</title>
-  <meta name="description" content="AI-powered location risk scoring that goes beyond crime reports. Correlates government datasets with municipal records for predictive intelligence. Built for PropTech, real estate, and insurance." />
+  <meta name="description" content="Algorithm-driven location risk scoring. Correlates U.S. Census ACS data with NYPD crime records at the census-tract level. Built for underwriting, PropTech, and field intelligence." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1176,7 +1176,7 @@
     API · Now in Private Beta
   </div>
   <h1>Location Risk Intelligence,<br><em>Powered by Correlation</em></h1>
-  <p class="hero-sub">We correlate government datasets with municipal records to find predictive patterns most APIs miss. AI-powered scoring that goes beyond raw crime reports.</p>
+  <p class="hero-sub">We correlate U.S. Census ACS demographic data with NYPD crime records to produce location risk scores at the census-tract level. No black-box AI — a transparent, auditable algorithm you can explain to a compliance team.</p>
   <div class="hero-audiences">
     <span class="audience-tag t1">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -1226,21 +1226,25 @@
     <div class="viz-card">
       <div class="viz-label">
         <span>Sample API Response</span>
-        <span style="font-family:var(--mono);font-size:.58rem;color:var(--amber);letter-spacing:.06em;">GET /v1/score</span>
+        <span style="font-family:var(--mono);font-size:.58rem;color:var(--amber);letter-spacing:.06em;">GET /v1/score?lat=40.71&amp;lng=-74.00&amp;level=bg</span>
       </div>
       <div class="api-pre">{
-  <span class="k">"location"</span>: <span class="v-str">"40.7128, -74.0060"</span>,
   <span class="k">"risk_score"</span>: <span class="v-num">3.2</span>,
-  <span class="k">"confidence"</span>: <span class="v-num">0.91</span>,
-  <span class="k">"signals"</span>: {
-    <span class="k">"data_correlation"</span>: <span class="v-num">0.87</span>,
-    <span class="k">"vacancy_signal"</span>: <span class="v-num">0.34</span>,
-    <span class="k">"economic_deviation"</span>: <span class="v-num">-0.12</span>,
-    <span class="k">"social_factor"</span>: <span class="v-num">0.79</span>,
-    <span class="k">"density_index"</span>: <span class="v-num">0.74</span>
+  <span class="k">"risk_percentile"</span>: <span class="v-num">18</span>,
+  <span class="k">"geoid"</span>: <span class="v-str">"360470001001"</span>,
+  <span class="k">"level"</span>: <span class="v-str">"bg"</span>,
+  <span class="k">"crime_component"</span>: <span class="v-num">0.41</span>,
+  <span class="k">"structural_component"</span>: <span class="v-num">0.59</span>,
+  <span class="k">"top_contributors"</span>: [
+    { <span class="k">"label"</span>: <span class="v-str">"Owner-occupied tenure"</span>, <span class="k">"impact"</span>: <span class="v-num">-0.28</span> },
+    { <span class="k">"label"</span>: <span class="v-str">"Bachelor's degree rate"</span>, <span class="k">"impact"</span>: <span class="v-num">-0.21</span> },
+    { <span class="k">"label"</span>: <span class="v-str">"Incident density"</span>,       <span class="k">"impact"</span>: <span class="v-num">+0.18</span> }
+  ],
+  <span class="k">"data_freshness"</span>: {
+    <span class="k">"crime_as_of"</span>: <span class="v-str">"2024-12-31"</span>,
+    <span class="k">"acs_vintage"</span>: <span class="v-str">"2023"</span>
   },
-  <span class="k">"prediction_window"</span>: <span class="v-str">"90_days"</span>,
-  <span class="k">"data_freshness"</span>: <span class="v-str">"2026-02-15"</span>
+  <span class="k">"confidence"</span>: <span class="v-num">0.91</span>
 }</div>
     </div>
   </div>
@@ -1347,9 +1351,9 @@
       <div class="pipe-icon c3">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
       </div>
-      <p class="pipe-eyebrow">AI Engine</p>
+      <p class="pipe-eyebrow">Algorithm</p>
       <h4>Correlation Model</h4>
-      <p>Statistical analysis finds predictive patterns between datasets.</p>
+      <p>Pearson correlation identifies which ACS variables predict crime burden — and by how much.</p>
     </div>
     <div class="pipe-step c4">
       <div class="pipe-icon c4">
@@ -1365,36 +1369,40 @@
 <!-- ─── CORRELATION ACCURACY ─── -->
 <section class="corr-section">
   <div class="section-header reveal">
-    <p class="eyebrow">Model Performance</p>
-    <h2>Correlation accuracy across <em>key signals</em></h2>
+    <p class="eyebrow">Model Quality</p>
+    <h2>Confidence backed <em>by evidence</em></h2>
   </div>
   <div class="corr-grid reveal">
     <div class="corr-card">
-      <p class="corr-title">Signal Correlation Strength</p>
-      <div class="bar-row">
-        <span class="bar-label">Economic Index</span>
-        <div class="bar-track"><div class="bar-fill high" data-w="87"></div></div>
-        <span class="bar-pct high">87%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Vacancy Signal</span>
-        <div class="bar-track"><div class="bar-fill high" data-w="82"></div></div>
-        <span class="bar-pct high">82%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Social Factor</span>
-        <div class="bar-track"><div class="bar-fill high" data-w="79"></div></div>
-        <span class="bar-pct high">79%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Density Score</span>
-        <div class="bar-track"><div class="bar-fill" data-w="74"></div></div>
-        <span class="bar-pct">74%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Labor Signal</span>
-        <div class="bar-track"><div class="bar-fill" data-w="71"></div></div>
-        <span class="bar-pct">71%</span>
+      <p class="corr-title">Why It Holds Up</p>
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:6px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <p style="font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:.3rem;">Tested on data it never saw</p>
+            <p style="font-size:.8rem;color:var(--muted-light);line-height:1.65;">Trained on three years of historical data, then validated on a full fourth year before we showed it to anyone. The risk rankings held.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:6px;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div>
+            <p style="font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:.3rem;">Transparent inputs</p>
+            <p style="font-size:.8rem;color:var(--muted-light);line-height:1.65;">Every variable is a named, documented Census ACS field. No proprietary black-box data. You can explain every score to a compliance team.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <div style="width:32px;height:32px;border-radius:6px;background:rgba(232,168,124,.1);border:1px solid rgba(232,168,124,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8a87c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <p style="font-size:.9rem;font-weight:600;color:var(--text-bright);margin-bottom:.3rem;">Stable signal, not noise</p>
+            <p style="font-size:.8rem;color:var(--muted-light);line-height:1.65;">The structural factors that correlate with neighborhood risk don't flip year to year. The model captures durable signal — not short-term fluctuation.</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="corr-card">
@@ -1441,10 +1449,10 @@
   </div>
   <p class="sources-note reveal">Currently live in <strong>NYC</strong>. Expanding nationwide.</p>
   <div class="source-grid reveal">
-    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Government Data</span></div>
-    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Municipal Incidents</span></div>
-    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Income &amp; Poverty</span></div>
-    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Social Factors</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Census ACS 5-Year</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">NYPD Complaint Data</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Education Attainment</span></div>
+    <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Housing Tenure</span></div>
     <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Housing &amp; Vacancy</span></div>
     <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Population Density</span></div>
     <div class="source-chip"><span class="status-dot next"></span><span class="source-status next">Next</span><span class="source-name">OpenStreetMap</span></div>
@@ -1473,18 +1481,18 @@
     </div>
     <div class="roadmap-card q2">
       <p class="rm-time">→ Q2 2026</p>
-      <h4>OpenStreetMap Integration</h4>
-      <p>Physical environment data — building types, road networks, points of interest, land use — for richer predictions.</p>
+      <h4>Nationwide Coverage</h4>
+      <p>Census ACS 5-year estimates cover all 220,000+ U.S. census block groups.</p>
     </div>
     <div class="roadmap-card q3">
       <p class="rm-time">→ Q3 2026</p>
-      <h4>Live Data Feeds</h4>
-      <p>Real-time signals from Citizen app, 311 complaints, and social media for dynamic risk scoring.</p>
+      <h4>Self-Serve Access</h4>
+      <p>API key management, usage dashboard, and tiered pricing. Sign up, get a key, start scoring in under an hour.</p>
     </div>
     <div class="roadmap-card q4">
       <p class="rm-time">→ Q4 2026</p>
-      <h4>Nationwide Coverage</h4>
-      <p>Expand beyond NYC to all major US metros. Census data is nationwide — crime data partnerships in progress.</p>
+      <h4>Live Signals</h4>
+      <p>Layer in real-time data — 311 complaints, Citizen app, permit activity — for dynamic scoring that reflects what's happening now, not last year.</p>
     </div>
   </div>
 </section>
@@ -1533,11 +1541,11 @@
 <div class="trust reveal">
   <p class="trust-label">Powered by Authoritative Government Data Sources</p>
   <div class="trust-row">
-    <span class="trust-chip">Federal Government Data</span>
-    <span class="trust-chip">Municipal Open Data</span>
-    <span class="trust-chip">Demographic Datasets</span>
-    <span class="trust-chip">Public Safety Records</span>
-    <span class="trust-chip">Geospatial Intelligence</span>
+    <span class="trust-chip">U.S. Census ACS 5-Year</span>
+    <span class="trust-chip">NYPD Complaint Data</span>
+    <span class="trust-chip">Census-Tract Resolution</span>
+    <span class="trust-chip">Block-Group Scoring</span>
+    <span class="trust-chip">Backtested on 2024 Data</span>
   </div>
 </div>
 
@@ -1551,7 +1559,7 @@
     <form action="https://formsubmit.co/oopslabai@gmail.com" method="POST">
       <input type="hidden" name="_subject" value="LocalScore Demo Request">
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://oops-lab-ai.github.io/localscore/thanks.html">
+      <input type="hidden" name="_next" value="https://localscore.oopslab.ai/thanks.html">
       <div class="field">
         <label for="company">Company Name</label>
         <input type="text" id="company" name="company" placeholder="Acme PropTech Inc." required />
