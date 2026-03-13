@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrimeScore.io — Location Risk Intelligence API</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #09090b;
+  --bg-secondary: #111113;
+  --bg-card: #18181b;
+  --bg-card-hover: #1f1f23;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --accent: #f97316;
+  --accent-dim: #ea580c;
+  --accent-glow: rgba(249, 115, 22, 0.15);
+  --danger: #ef4444;
+  --safe: #22c55e;
+  --border: #27272a;
+  --border-light: #3f3f46;
+  --radius: 12px;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Outfit', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 400;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text-primary); }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  font-family: var(--sans);
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dim); transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+.btn-ghost:hover { border-color: var(--text-muted); background: var(--bg-card); }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 2rem 4rem;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+  filter: saturate(0.7);
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(9,9,11,0.4) 0%, rgba(9,9,11,0.8) 60%, var(--bg-primary) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  margin-bottom: 1.5rem;
+  font-family: var(--mono);
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 .gradient {
+  background: linear-gradient(135deg, var(--accent), #fb923c, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  font-weight: 300;
+}
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-code {
+  margin-top: 3rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: inline-block;
+  text-align: left;
+}
+.hero-code .method { color: #22c55e; }
+.hero-code .url { color: var(--text-secondary); }
+.hero-code .flag { color: var(--accent); }
+
+/* ===== SECTION BASICS ===== */
+section {
+  padding: 6rem 2rem;
+}
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+.section-desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ===== API DEMO ===== */
+.api-demo {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.api-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+  margin-top: 3rem;
+}
+.code-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.code-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.code-dot.red { background: #ef4444; }
+.code-dot.yellow { background: #eab308; }
+.code-dot.green { background: #22c55e; }
+.code-body {
+  padding: 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+.code-body pre { white-space: pre; }
+.tok-key { color: #7dd3fc; }
+.tok-str { color: #86efac; }
+.tok-num { color: #fbbf24; }
+.tok-bracket { color: #71717a; }
+.tok-comment { color: #52525b; font-style: italic; }
+.tok-method { color: #22c55e; font-weight: 700; }
+.tok-url { color: #a78bfa; }
+
+/* ===== IMAGE SECTION ===== */
+.image-section {
+  position: relative;
+  overflow: hidden;
+}
+.image-section .bg-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.image-section .bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.25;
+}
+.image-section .bg-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--bg-primary), rgba(9,9,11,0.6), var(--bg-primary));
+}
+.image-section .section-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== HOW IT WORKS ===== */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.step-card:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+.step-num {
+  font-family: var(--mono);
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(249, 115, 22, 0.15);
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  line-height: 1;
+}
+.step-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.step-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.step-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ===== FEATURES ===== */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  transition: all 0.3s;
+}
+.feature-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-1px);
+}
+.feature-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-glow);
+  border-radius: 10px;
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+.feature-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.feature-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* ===== SHOWCASE ===== */
+.showcase-img {
+  margin-top: 3rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.showcase-img img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== COVERAGE ===== */
+.coverage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 3rem;
+  align-items: center;
+}
+.coverage-img {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.coverage-img img {
+  width: 100%;
+  display: block;
+}
+.data-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.data-source {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.data-source-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.data-source h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.data-source p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ===== PRICING ===== */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.price-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+}
+.price-card.featured {
+  border-color: var(--accent);
+  box-shadow: 0 0 40px var(--accent-glow);
+}
+.price-card.featured::before {
+  content: 'MOST POPULAR';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.25rem 1rem;
+  border-radius: 100px;
+  letter-spacing: 1px;
+  font-family: var(--mono);
+}
+.price-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-light);
+}
+.price-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.price-card .price {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin: 1rem 0;
+}
+.price-card .price span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.price-card .price-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+.price-features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+.price-features li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.price-features li::before {
+  content: '✓';
+  color: var(--safe);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.price-card .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ===== CTA ===== */
+.final-cta {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta .section-inner {
+  position: relative;
+  z-index: 1;
+}
+.cta-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4rem 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.cta-box h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+}
+.cta-box p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+footer p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+footer a:hover { color: var(--text-primary); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .api-grid, .features-grid, .coverage-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">crime<span>score</span>.io</a>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#api">API</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#" class="btn btn-ghost">Docs</a>
+    <a href="#" class="btn btn-primary">Get API Key →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="images/hero-city.jpg" alt="" loading="eager">
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">⚡ Now in public beta</div>
+    <h1>Location risk intelligence<br>via <span class="gradient">one API call</span></h1>
+    <p>Get neighborhood-level crime risk scores for any US coordinate. Built on census data and NYPD complaint records. Sub-50ms response times.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">Start Free Trial →</a>
+      <a href="#api" class="btn btn-ghost" style="padding: 0.8rem 2rem; font-size: 1rem;">View API Docs</a>
+    </div>
+    <div class="hero-code">
+      <span class="method">GET</span> <span class="url">https://api.crimescore.io/v1/score</span><span class="flag">?lat=40.7128&lng=-74.0060</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="image-section">
+  <div class="bg-image">
+    <img src="images/abstract-grid.jpg" alt="" loading="lazy">
+  </div>
+  <div class="section-inner">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">Three steps. One endpoint.</div>
+    <div class="section-desc">Send coordinates, get a risk score. No complex setup, no data pipelines to maintain.</div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">📍</div>
+        <h3>Send coordinates</h3>
+        <p>Pass any US latitude and longitude. We resolve it to the exact census block group — the most granular geography available.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">🧮</div>
+        <h3>We score the location</h3>
+        <p>Our model correlates 15+ census variables — income, education, vacancy, housing tenure — with historical crime patterns to produce a risk score.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">📊</div>
+        <h3>Get structured data back</h3>
+        <p>Risk score (0-100), percentile ranking, confidence level, component breakdown, and the top variables driving the score. JSON, under 50ms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API DEMO -->
+<section id="api" class="api-demo">
+  <div class="section-inner">
+    <div class="section-label">API</div>
+    <div class="section-title">Built for developers</div>
+    <div class="section-desc">One REST endpoint. API key auth. JSON responses. No SDK required.</div>
+    <div class="api-grid">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot red"></span>
+          <span class="code-dot yellow"></span>
+          <span class="code-dot green"></span>
+          &nbsp;&nbsp;Request
+        </div>
+        <div class="code-body">
+<pre><span class="tok-method">GET</span> <span class="tok-url">/v1/score?lat=40.6782&lng=-73.9442</span>
+
+<span class="tok-comment">// Headers</span>
+<span class="tok-key">x-api-key</span>: sk_live_a8f3k2m9x...
+<span class="tok-key">Content-Type</span>: application/json</pre>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dot red"></span>
+          <span class="code-dot yellow"></span>
+          <span class="code-dot green"></span>
+          &nbsp;&nbsp;Response · 200 OK · 23ms
+        </div>
+        <div class="code-body">
+<pre><span class="tok-bracket">{</span>
+  <span class="tok-key">"geoid"</span>: <span class="tok-str">"360470039002"</span>,
+  <span class="tok-key">"risk_score"</span>: <span class="tok-num">7.4</span>,
+  <span class="tok-key">"risk_percentile"</span>: <span class="tok-num">82</span>,
+  <span class="tok-key">"confidence"</span>: <span class="tok-num">0.71</span>,
+  <span class="tok-key">"components"</span>: <span class="tok-bracket">{</span>
+    <span class="tok-key">"structural"</span>: <span class="tok-num">6.8</span>,
+    <span class="tok-key">"crime"</span>: <span class="tok-num">8.1</span>
+  <span class="tok-bracket">}</span>,
+  <span class="tok-key">"top_contributors"</span>: <span class="tok-bracket">[</span>
+    <span class="tok-bracket">{</span><span class="tok-key">"variable"</span>: <span class="tok-str">"owner_occupied_pct"</span>, <span class="tok-key">"impact"</span>: <span class="tok-str">"risk"</span><span class="tok-bracket">}</span>,
+    <span class="tok-bracket">{</span><span class="tok-key">"variable"</span>: <span class="tok-str">"vacancy_rate"</span>, <span class="tok-key">"impact"</span>: <span class="tok-str">"risk"</span><span class="tok-bracket">}</span>
+  <span class="tok-bracket">]</span>
+<span class="tok-bracket">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA VIZ SHOWCASE -->
+<section class="image-section">
+  <div class="section-inner">
+    <div class="section-label">Visualization</div>
+    <div class="section-title">See risk at a glance</div>
+    <div class="section-desc">Census block group level granularity across the entire United States. 220,000+ scored locations.</div>
+    <div class="showcase-img">
+      <img src="images/heatmap-overlay.jpg" alt="Crime risk heatmap visualization" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <div class="section-title">Why CrimeScore</div>
+    <div class="section-desc">Enterprise-grade data at a developer-friendly price point.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div>
+          <h3>Sub-50ms responses</h3>
+          <p>Pre-computed scores stored in DynamoDB. Spatial index resolves coordinates to census block groups in under 10ms. No batch processing delays.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🇺🇸</div>
+        <div>
+          <h3>Nationwide coverage</h3>
+          <p>220,000+ census block groups scored across all 50 states. NYC block groups include actual crime data overlay for enhanced accuracy.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <div>
+          <h3>Explainable scores</h3>
+          <p>Every score includes the top contributing variables and component breakdown. Show your users why a location scored the way it did.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔑</div>
+        <div>
+          <h3>Simple API key auth</h3>
+          <p>No OAuth flows. No session tokens. Just an x-api-key header. Generate keys from your dashboard, start querying in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE + DATA SOURCES -->
+<section id="coverage" style="background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="coverage-grid">
+      <div>
+        <div class="section-label">Data</div>
+        <div class="section-title">Built on authoritative sources</div>
+        <div class="section-desc" style="margin-bottom: 2rem;">Our model learns crime-census correlations from NYC, then extrapolates nationwide using structural census variables.</div>
+        <div class="data-sources">
+          <div class="data-source">
+            <div class="data-source-icon">📋</div>
+            <div>
+              <h4>US Census Bureau — ACS 5-Year</h4>
+              <p>15+ variables: income, education, vacancy rates, housing tenure, rent levels, population density. Block group level granularity.</p>
+            </div>
+          </div>
+          <div class="data-source">
+            <div class="data-source-icon">🚔</div>
+            <div>
+              <h4>NYPD Complaint Data</h4>
+              <p>Millions of historical crime complaint records. Used to train the model — identifies which census patterns predict crime risk.</p>
+            </div>
+          </div>
+          <div class="data-source">
+            <div class="data-source-icon">🗺️</div>
+            <div>
+              <h4>TIGER/Line Shapefiles</h4>
+              <p>Census block group boundaries for precise geospatial resolution. Your coordinates resolve to the exact geography.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="coverage-img">
+        <img src="images/us-coverage-map.jpg" alt="US coverage map" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner" style="text-align: center;">
+    <div class="section-label">Pricing</div>
+    <div class="section-title" style="margin: 0 auto;">Simple, usage-based pricing</div>
+    <div class="section-desc" style="margin: 1rem auto 0;">Start free. Scale when you're ready.</div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Free Trial</h3>
+        <div class="price">$0 <span>/90 days</span></div>
+        <div class="price-desc">Evaluate the API with real data</div>
+        <ul class="price-features">
+          <li>100 requests / day</li>
+          <li>Full API access</li>
+          <li>All score components</li>
+          <li>Community support</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Start Free →</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Starter</h3>
+        <div class="price">$500 <span>/month</span></div>
+        <div class="price-desc">For startups and growing products</div>
+        <ul class="price-features">
+          <li>10,000 requests / day</li>
+          <li>10 req/sec rate limit</li>
+          <li>Dashboard analytics</li>
+          <li>Email support</li>
+          <li>Multiple API keys</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Get Started →</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <div class="price-desc">For insurance carriers and platforms</div>
+        <ul class="price-features">
+          <li>Custom request volume</li>
+          <li>Custom rate limits</li>
+          <li>Dedicated support</li>
+          <li>SLA guarantee</li>
+          <li>Batch endpoint access</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Contact Us →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta image-section">
+  <div class="bg-image">
+    <img src="images/data-viz-3d.jpg" alt="" loading="lazy">
+  </div>
+  <div class="section-inner">
+    <div class="cta-box">
+      <h2>Ready to score locations?</h2>
+      <p>Get your API key in 30 seconds. 90-day free trial. No credit card required.</p>
+      <a href="#" class="btn btn-primary" style="padding: 0.9rem 2.5rem; font-size: 1.05rem;">Start Free Trial →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 CrimeScore.io — Built by <a href="https://oopslab.ai">OopsLab AI</a> &nbsp;·&nbsp; <a href="#">Terms</a> &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">API Status</a></p>
+</footer>
+
+</body>
+</html>
