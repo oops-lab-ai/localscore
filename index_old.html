@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrimeScore.io – Location Risk Intelligence Powered by Data Correlation</title>
+  <title>LocalScore – Location Risk Intelligence Powered by Data Correlation</title>
   <meta name="description" content="Algorithm-driven location risk scoring. Correlates U.S. Census ACS data with NYPD crime records at the census-tract level. Built for underwriting, PropTech, and field intelligence." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -170,8 +170,8 @@
     .hero-bg-img {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: url('images/hero-city.jpg') center center / cover no-repeat;
-      opacity: 0.12;
+      background: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1400&q=80&auto=format') center center / cover no-repeat;
+      opacity: 0.06;
       pointer-events: none;
       z-index: 0;
     }
@@ -1161,7 +1161,7 @@
 
 <!-- ─── NAVIGATION ─── -->
 <nav>
-  <div class="logo">Crime<em>Score</em></div>
+  <div class="logo">Local<em>Score</em></div>
   <div class="nav-right">
     <span class="nav-tag">Private Beta</span>
     <a href="#demo" class="nav-cta">Request Demo</a>
@@ -1292,7 +1292,7 @@
     <div class="compare-card positive">
       <h3>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 10 11 15 8 12"/></svg>
-        CrimeScore Approach
+        LocalScore Approach
       </h3>
       <ul class="compare-list">
         <li>
@@ -1448,9 +1448,6 @@
     <h2>Signals powering <em>our model</em></h2>
   </div>
   <p class="sources-note reveal">Currently live in <strong>NYC</strong>. Expanding nationwide.</p>
-  <div class="reveal" style="max-width:var(--max-w);margin:0 auto 2.5rem;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);">
-    <img src="images/us-coverage-map.jpg" alt="US coverage map" style="width:100%;display:block;opacity:.85;" loading="lazy">
-  </div>
   <div class="source-grid reveal">
     <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">Census ACS 5-Year</span></div>
     <div class="source-chip"><span class="status-dot live"></span><span class="source-status live">Live</span><span class="source-name">NYPD Complaint Data</span></div>
@@ -1508,7 +1505,7 @@
   </div>
   <div class="uc-grid reveal">
     <div class="uc-card">
-      <img class="uc-card-img" src="images/heatmap-overlay.jpg" alt="Risk heatmap visualization" loading="lazy" />
+      <img class="uc-card-img" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80&auto=format" alt="Real estate" loading="lazy" />
       <div class="uc-card-body">
       <div class="uc-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -1518,7 +1515,7 @@
       </div>
     </div>
     <div class="uc-card">
-      <img class="uc-card-img" src="images/dashboard-mockup.jpg" alt="Analytics dashboard" loading="lazy" />
+      <img class="uc-card-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80&auto=format" alt="Commercial buildings" loading="lazy" />
       <div class="uc-card-body">
       <div class="uc-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -1528,7 +1525,7 @@
       </div>
     </div>
     <div class="uc-card">
-      <img class="uc-card-img" src="images/data-viz-3d.jpg" alt="3D risk visualization" loading="lazy" />
+      <img class="uc-card-img" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80&auto=format" alt="Insurance documents" loading="lazy" />
       <div class="uc-card-body">
       <div class="uc-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
@@ -1560,9 +1557,9 @@
     <h3>Request a Demo</h3>
     <p class="form-sub">We'll walk you through a live API call on your dataset.</p>
     <form action="https://formsubmit.co/37854c7035ccb6cf6b2725b96a408cc5" method="POST">
-      <input type="hidden" name="_subject" value="CrimeScore Demo Request">
+      <input type="hidden" name="_subject" value="LocalScore Demo Request">
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://crimescore.io/thanks.html">
+      <input type="hidden" name="_next" value="https://localscore.oopslab.ai/thanks.html">
       <div class="field">
         <label for="company">Company Name</label>
         <input type="text" id="company" name="company" placeholder="Acme PropTech Inc." required />
@@ -1597,9 +1594,9 @@
 <!-- ─── FOOTER ─── -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-left">Crime<em>Score</em></div>
+    <div class="footer-left">Local<em>Score</em></div>
     <div class="footer-right">
-      © 2026 CrimeScore by OopsLab AI · <a href="mailto:oopslabai@gmail.com">oopslabai@gmail.com</a>
+      © 2026 LocalScore by OopsLab AI · <a href="mailto:oopslabai@gmail.com">oopslabai@gmail.com</a>
     </div>
   </div>
 </footer>
